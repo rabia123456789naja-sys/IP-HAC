@@ -4,14 +4,17 @@ config.js
 # ملفات النظام
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # ملفات السجلات
 *.log
 *.tmp
+*.cache
 
 # مجلدات IDE
 .vscode/
 .idea/
+*.swp
 
 # ملفات بايثون
 __pycache__/
