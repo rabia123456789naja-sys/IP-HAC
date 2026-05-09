@@ -1,0 +1,18 @@
+# إخفاء ملف الإعدادات السري
+config.js
+
+# ملفات النظام
+.DS_Store
+Thumbs.db
+
+# ملفات السجلات
+*.log
+*.tmp
+
+# مجلدات IDE
+.vscode/
+.idea/
+
+# ملفات بايثون
+__pycache__/
+*.pyc
