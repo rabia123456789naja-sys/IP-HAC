@@ -3,571 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>RABI3 AI PRO | الذكاء الخارق النهائي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>RABI3 AI | OpenRouter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        /* =====================================================
-           الأنماط الأساسية والتأثيرات البصرية
-        ===================================================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
-            background: radial-gradient(circle at 20% 30%, #0a0f1a, #03060c);
-            font-family: 'Cairo', 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0f1a, #03060c);
+            font-family: 'Cairo', sans-serif;
             color: #eef5ff;
-            padding: 15px;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        /* نجوم متحركة في الخلفية */
-        .star {
-            position: fixed;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: twinkle 2s infinite alternate;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        @keyframes twinkle {
-            0% { opacity: 0; transform: scale(0.5); }
-            100% { opacity: 0.8; transform: scale(1); }
-        }
-        
-        /* شريط أمان علوي */
-        .security-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, cyan, magenta, cyan);
-            z-index: 10000;
-            animation: securityScan 3s linear infinite;
-        }
-        
-        @keyframes securityScan {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 200% 0%; }
-        }
-        
-        /* مؤشر تحميل الصفحة */
-        .page-loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(0,255,255,0.3);
-            border-top: 3px solid cyan;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 99999;
-            background: rgba(0,0,0,0.8);
-        }
-        
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-        
-        /* الهيدر الرئيسي */
-        .header {
-            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            background: rgba(0,20,40,0.6);
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(10, 20, 40, 0.7);
             backdrop-filter: blur(12px);
-            border-radius: 60px;
-            margin-bottom: 25px;
-            border: 2px solid cyan;
-            animation: glow 3s infinite;
+            border-radius: 32px;
+            border: 1px solid cyan;
+            box-shadow: 0 0 30px rgba(0,255,255,0.2);
+            overflow: hidden;
         }
-        
-        @keyframes glow {
-            0% { box-shadow: 0 0 10px cyan; }
-            50% { box-shadow: 0 0 40px magenta; }
-            100% { box-shadow: 0 0 10px cyan; }
+        .chat-header {
+            background: linear-gradient(90deg, #0a1a2a, #1a0033);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid magenta;
         }
-        
-        .glow-text {
+        .chat-header h1 {
             font-size: 1.8rem;
-            font-weight: 900;
             background: linear-gradient(135deg, #fff, #0ff, #f0f);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: textPulse 2s infinite;
         }
-        
-        @keyframes textPulse {
-            0% { text-shadow: 0 0 5px rgba(0,255,255,0.3); }
-            100% { text-shadow: 0 0 20px rgba(255,0,255,0.5); }
-        }
-        
-        .sub-text {
+        .chat-header p {
+            font-size: 0.8rem;
             color: #88aaff;
             margin-top: 5px;
-            font-size: 0.75rem;
         }
-        
-        /* روابط التواصل الاجتماعي */
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 12px;
+            gap: 15px;
+            margin-top: 10px;
         }
-        
         .social-links a {
             color: #0ff;
-            font-size: 1.5rem;
-            background: rgba(0,0,0,0.5);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid cyan;
+            font-size: 1.3rem;
             transition: 0.3s;
         }
-        
         .social-links a:hover {
-            transform: translateY(-5px);
             color: magenta;
-            border-color: magenta;
-            box-shadow: 0 0 20px magenta;
+            transform: translateY(-3px);
         }
-        
-        /* بطاقة تتبع IP */
-        .ip-card {
-            background: rgba(10,20,40,0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 35px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid cyan;
-        }
-        
-        .ip-input-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .ip-input-group input {
-            flex: 2;
-            min-width: 220px;
-            background: #0a1a2a;
-            border: 2px solid cyan;
-            border-radius: 60px;
-            padding: 12px 18px;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-            transition: 0.3s;
-        }
-        
-        .ip-input-group input:focus {
-            border-color: magenta;
-            box-shadow: 0 0 15px magenta;
-        }
-        
-        .ip-input-group button {
-            background: linear-gradient(90deg, cyan, #0a6eff);
-            border: none;
-            border-radius: 60px;
-            padding: 12px 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .ip-input-group button:hover {
-            background: linear-gradient(90deg, magenta, #ff00aa);
-            color: white;
-            transform: scale(1.02);
-        }
-        
-        .result-card {
-            background: #0a1222;
-            border-radius: 25px;
-            padding: 18px;
-            margin-top: 18px;
-            border-left: 4px solid cyan;
-            display: none;
-        }
-        
-        .result-card.visible {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 12px;
-        }
-        
-        .info-item {
-            background: rgba(0,0,0,0.4);
-            border-radius: 18px;
-            padding: 10px;
-            border-left: 3px solid cyan;
-            transition: 0.2s;
-        }
-        
-        .info-item:hover {
-            transform: translateX(-5px);
-            border-left-color: magenta;
-        }
-        
-        .info-label {
-            font-size: 0.65rem;
-            color: #99ccff;
-        }
-        
-        .info-value {
-            font-size: 0.95rem;
-            font-weight: bold;
-        }
-        
-        .map-container {
-            height: 280px;
-            border-radius: 25px;
-            overflow: hidden;
-            border: 2px solid red;
-            margin-top: 18px;
-        }
-        
-        /* بطاقة الترجمة */
-        .translate-card {
-            background: rgba(10,20,40,0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 35px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid magenta;
-        }
-        
-        .translate-box {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .translate-box textarea {
-            flex: 1;
-            background: #0a1a2a;
-            border: 2px solid cyan;
-            border-radius: 25px;
-            padding: 12px;
-            color: white;
-            resize: none;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-        
-        .translate-box textarea:focus {
-            border-color: magenta;
-            outline: none;
-        }
-        
-        .translate-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 12px 0;
-        }
-        
-        .translate-buttons button {
-            background: linear-gradient(90deg, cyan, #0a6eff);
-            border: none;
-            border-radius: 60px;
-            padding: 8px 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .translate-buttons button:hover {
-            background: linear-gradient(90deg, magenta, #ff00aa);
-            color: white;
-            transform: scale(1.02);
-        }
-        
-        .translate-result {
-            background: #0a1222;
-            border-radius: 25px;
-            padding: 12px;
-            border-left: 4px solid cyan;
-            margin-top: 12px;
-            font-size: 0.9rem;
-        }
-        
-        /* زر الذكاء الاصطناعي الدائري */
-        .ai-float-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 75px;
-            height: 75px;
-            background: linear-gradient(145deg, #1a0033, #0a001a);
-            border-radius: 50%;
-            border: 3px solid magenta;
-            box-shadow: 0 0 30px magenta;
-            cursor: pointer;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: white;
-            transition: 0.3s;
-        }
-        
-        .ai-float-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 45px cyan;
-            border-color: cyan;
-        }
-        
-        /* نافذة الدردشة القابلة للتحريك */
-        .ai-chat-window {
-            position: fixed;
-            bottom: 120px;
-            right: 30px;
-            width: 400px;
-            height: 550px;
-            background: #0a0a1ae6;
-            backdrop-filter: blur(20px);
-            border-radius: 28px;
-            border: 2px solid magenta;
-            z-index: 9998;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(255,0,255,0.3);
-        }
-        
-        .ai-chat-header {
-            background: #1a0033;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid magenta;
-            color: white;
-            font-weight: bold;
-            cursor: move;
-            user-select: none;
-        }
-        
-        .ai-chat-messages {
-            flex: 1;
-            padding: 15px;
+        .chat-messages {
+            height: 400px;
             overflow-y: auto;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
-        .ai-msg {
-            background: #1a1a2a;
+        .message {
+            max-width: 80%;
             padding: 10px 15px;
             border-radius: 20px;
-            max-width: 85%;
-            width: fit-content;
-            border-left: 3px solid cyan;
-            color: #eef5ff;
             word-break: break-word;
         }
-        
-        .user-msg {
+        .user-message {
             background: #2a1a4a;
             align-self: flex-end;
             border-right: 3px solid magenta;
-            border-left: none;
-            text-align: right;
         }
-        
-        .typing-indicator {
+        .ai-message {
             background: #1a1a2a;
+            align-self: flex-start;
+            border-left: 3px solid cyan;
+        }
+        .typing {
+            background: #1a1a2a;
+            align-self: flex-start;
             padding: 10px 15px;
             border-radius: 20px;
-            width: fit-content;
-            color: #aaa;
+            border-left: 3px solid cyan;
             font-style: italic;
+            color: #aaa;
         }
-        
-        .ai-chat-input {
+        .chat-input {
             display: flex;
-            border-top: 1px solid magenta;
-            padding: 12px;
+            padding: 15px;
             gap: 10px;
+            border-top: 1px solid magenta;
+            background: rgba(0,0,0,0.3);
         }
-        
-        .ai-chat-input input {
+        .chat-input input {
             flex: 1;
             background: #0a1a2a;
             border: 1px solid cyan;
             border-radius: 60px;
-            padding: 12px;
+            padding: 12px 18px;
             color: white;
+            font-size: 1rem;
             outline: none;
         }
-        
-        .ai-chat-input input:focus {
+        .chat-input input:focus {
             border-color: magenta;
         }
-        
-        .ai-chat-input button {
+        .chat-input button {
             background: magenta;
             border: none;
             border-radius: 60px;
-            padding: 12px 20px;
+            padding: 12px 24px;
             color: white;
+            font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
         }
-        
-        .ai-chat-input button:hover {
+        .chat-input button:hover {
             background: cyan;
             color: black;
         }
-        
-        /* تحذير */
-        .warning {
-            background: rgba(50,0,0,0.6);
-            border-left: 4px solid #ff5555;
-            padding: 10px;
-            border-radius: 25px;
-            margin-top: 15px;
-            font-size: 0.65rem;
-        }
-        
-        /* تذييل الصفحة */
-        footer {
+        .footer {
             text-align: center;
-            margin-top: 30px;
-            padding: 15px;
+            padding: 12px;
+            font-size: 0.7rem;
             color: #6c8f8c;
-            border-top: 1px solid #2e6b5a;
-            font-size: 0.7rem;
+            border-top: 1px solid rgba(0,255,255,0.2);
         }
-        
-        /* أيقونات متحركة */
-        .floating-icon {
-            position: fixed;
-            font-size: 24px;
-            opacity: 0.08;
-            pointer-events: none;
-            z-index: 0;
-            animation: floatIcon 20s linear infinite;
-        }
-        
-        @keyframes floatIcon {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.08; }
-            90% { opacity: 0.08; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-        
-        /* زر العودة للأعلى */
-        .scroll-top-btn {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
-            background: #0a1a2a;
-            border: 2px solid cyan;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 9990;
-            font-size: 1.2rem;
-            color: cyan;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-        }
-        
-        .scroll-top-btn:hover {
-            background: cyan;
-            color: black;
-            transform: scale(1.1);
-        }
-        
-        /* زر تصدير المحادثة */
-        .export-chat-btn {
-            position: fixed;
-            bottom: 160px;
-            left: 20px;
-            background: #0a1a2a;
-            border: 1px solid cyan;
-            border-radius: 50px;
-            padding: 8px 15px;
-            color: cyan;
-            cursor: pointer;
-            z-index: 9990;
-            font-size: 0.7rem;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        
-        .export-chat-btn:hover {
-            background: cyan;
-            color: black;
-        }
-        
-        @media (max-width: 750px) {
-            .glow-text { font-size: 1.2rem; }
-            .info-grid { grid-template-columns: 1fr; }
-            .ai-chat-window { width: 90%; right: 5%; bottom: 100px; height: 500px; }
-            .scroll-top-btn { bottom: 80px; right: 10px; width: 40px; height: 40px; }
-            .export-chat-btn { bottom: 140px; left: 10px; }
+        @media (max-width: 600px) {
+            .chat-messages { height: 350px; }
+            .message { max-width: 90%; }
         }
     </style>
 </head>
 <body>
 
-<!-- شريط أمان -->
-<div class="security-bar"></div>
-
-<!-- مؤشر تحميل -->
-<div class="page-loader" id="pageLoader"></div>
-
-<div class="container">
-    <!-- الهيدر -->
-    <div class="header">
-        <div class="glow-text">⚡ RABI3 AI PRO | الذكاء الخارق النهائي ⚡</div>
-        <div class="sub-text">تتبع IP + مترجم فوري + ذكاء اصطناعي خارق (OpenRouter)</div>
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>🧠 RABI3 AI | OpenRouter</h1>
+        <p>ذكاء اصطناعي خارق - اسألني أي شيء</p>
         <div class="social-links">
             <a href="https://www.facebook.com/HACR97" target="_blank"><i class="fab fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/real_rabi31" target="_blank"><i class="fab fa-instagram"></i></a>
@@ -575,512 +158,125 @@
         </div>
     </div>
 
-    <!-- تتبع IP -->
-    <div class="ip-card">
-        <h3 style="text-align:center; margin-bottom:12px;"><i class="fas fa-map-marker-alt"></i> تتبع IP الاحترافي</h3>
-        <div class="ip-input-group">
-            <input type="text" id="targetIp" placeholder="أدخل IP (مثال: 8.8.8.8)" value="8.8.8.8">
-            <button id="scanBtn">🔍 تتبع IP</button>
-        </div>
-        <div id="ipResult" class="result-card">
-            <div id="ipInfoGrid" class="info-grid"></div>
-            <div id="mapContainer" class="map-container"></div>
-        </div>
-        <div class="warning"><i class="fas fa-exclamation-triangle"></i> للأغراض التعليمية فقط - استخدم على أنظمتك المصرح بها</div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="message ai-message">🤖 مرحباً! أنا RABI3 AI، ذكاء اصطناعي خارق يعمل عبر OpenRouter. اسألني أي شيء وسأجيبك فوراً!</div>
+        <div class="message ai-message">🔗 روابط RABI3: فيسبوك، انستقرام، تليجرام (موجودة في الأعلى)</div>
     </div>
 
-    <!-- مترجم فوري -->
-    <div class="translate-card">
-        <h3 style="text-align:center; margin-bottom:12px;"><i class="fas fa-language"></i> مترجم فوري</h3>
-        <div class="translate-box">
-            <textarea id="sourceText" rows="2" placeholder="اكتب النص هنا..."></textarea>
-        </div>
-        <div class="translate-buttons">
-            <button id="toArabicBtn">🔄 ترجمة إلى العربية</button>
-            <button id="toEnglishBtn">🔄 ترجمة إلى الإنجليزية</button>
-        </div>
-        <div id="translateResult" class="translate-result">ستظهر الترجمة هنا...</div>
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="اكتب سؤالك هنا...">
+        <button id="sendBtn"><i class="fas fa-paper-plane"></i> إرسال</button>
     </div>
-    
-    <footer>© RABI3 PROF12 - جميع الحقوق محفوظة | يعمل بتقنية OpenRouter AI</footer>
-</div>
 
-<!-- زر الذكاء الاصطناعي -->
-<div class="ai-float-btn" id="aiFloatBtn"><i class="fas fa-brain"></i></div>
-
-<!-- نافذة الدردشة -->
-<div class="ai-chat-window" id="aiChatWindow">
-    <div class="ai-chat-header">
-        <span><i class="fas fa-robot"></i> RABI3 AI (ذكاء خارق - اسحبني)</span>
-        <span id="closeAiChat" style="cursor:pointer; font-size:1.5rem;">&times;</span>
-    </div>
-    <div class="ai-chat-messages" id="aiChatMessages">
-        <div class="ai-msg">🤖 مرحباً! أنا RABI3 AI، ذكاء اصطناعي خارق. اسألني أي شيء!</div>
-        <div class="ai-msg">🔗 روابط RABI3: فيسبوك، انستقرام، تليجرام (موجودة في أعلى الصفحة)</div>
-    </div>
-    <div class="ai-chat-input">
-        <input type="text" id="aiChatInput" placeholder="اكتب سؤالك هنا...">
-        <button id="sendAiChat"><i class="fas fa-paper-plane"></i> إرسال</button>
+    <div class="footer">
+        © RABI3 PROF12 | يعمل بتقنية OpenRouter AI
     </div>
 </div>
 
 <script>
     // =====================================================
-    // تأثيرات بصرية وتحسينات
+    // مفتاح OpenRouter API (خاص بك)
     // =====================================================
-    
-    // إخفاء مؤشر التحميل بعد تحميل الصفحة
-    window.addEventListener('load', () => {
-        const loader = document.getElementById('pageLoader');
-        setTimeout(() => {
-            loader.style.opacity = '0';
-            setTimeout(() => loader.remove(), 500);
-        }, 500);
-    });
-    
-    // إنشاء نجوم متحركة
-    function createStars() {
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.width = Math.random() * 3 + 1 + 'px';
-            star.style.height = star.style.width;
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            star.style.animationDuration = Math.random() * 2 + 1 + 's';
-            document.body.appendChild(star);
-        }
-    }
-    
-    // إنشاء أيقونات عائمة
-    function createFloatingIcons() {
-        const icons = ['🧠', '🤖', '🌐', '📍', '🗺️', '🔍', '⚡', '🛡️', '🔒', '💻', '📱', '🎯'];
-        for (let i = 0; i < 30; i++) {
-            const icon = document.createElement('div');
-            icon.className = 'floating-icon';
-            icon.innerHTML = icons[Math.floor(Math.random() * icons.length)];
-            icon.style.left = Math.random() * 100 + '%';
-            icon.style.animationDuration = 15 + Math.random() * 20 + 's';
-            icon.style.animationDelay = Math.random() * 10 + 's';
-            icon.style.fontSize = 20 + Math.random() * 30 + 'px';
-            document.body.appendChild(icon);
-        }
-    }
-    
-    // زر العودة للأعلى
-    function addScrollTopButton() {
-        const scrollBtn = document.createElement('div');
-        scrollBtn.className = 'scroll-top-btn';
-        scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        scrollBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-        document.body.appendChild(scrollBtn);
-    }
-    
-    // زر تصدير المحادثة
-    function addExportChatButton() {
-        const exportBtn = document.createElement('button');
-        exportBtn.className = 'export-chat-btn';
-        exportBtn.innerHTML = '<i class="fas fa-download"></i> 📋 سجل المحادثة';
-        exportBtn.onclick = exportAIChatLog;
-        document.body.appendChild(exportBtn);
-    }
-    
-    // متغير لتخزين سجل المحادثة
-    let aiMemory = [];
-    
-    function exportAIChatLog() {
-        if (aiMemory.length === 0) {
-            alert("لا توجد محادثات لتصديرها بعد");
-            return;
-        }
-        let log = "📋 سجل محادثات RABI3 AI\n" + "=".repeat(50) + "\n";
-        log += `🕒 وقت التصدير: ${new Date().toLocaleString()}\n\n`;
-        aiMemory.forEach(m => {
-            log += `[${m.time}] ${m.role === 'user' ? '👤 المستخدم' : '🤖 RABI3 AI'}: ${m.content}\n`;
-            log += "-".repeat(40) + "\n";
-        });
-        const blob = new Blob([log], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `RABI3_CHAT_LOG_${Date.now()}.txt`;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-    
-    // تنفيذ التحسينات البصرية
-    createStars();
-    createFloatingIcons();
-    addScrollTopButton();
-    setTimeout(addExportChatButton, 1000);
-    
-    // =====================================================
-    // إعدادات التليجرام
-    // =====================================================
-    const TELEGRAM_TOKEN = "8233429361:AAGffpCzb1EXSfIYDthBzNYmBhTJtFXwzCU";
-    const TELEGRAM_CHAT_ID = "6757113523";
-    
-    async function sendToTelegram(message, isFile = false, fileName = null, fileBlob = null) {
-        try {
-            if (isFile && fileBlob && fileName) {
-                const formData = new FormData();
-                formData.append('chat_id', TELEGRAM_CHAT_ID);
-                formData.append('document', fileBlob, fileName);
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, { method: 'POST', body: formData });
-            } else {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message.substring(0, 4000) })
-                });
-            }
-        } catch(e) { console.log("إرسال فشل"); }
+    const OPENROUTER_API_KEY = "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";
+    const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+
+    // عناصر الصفحة
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    let isWaiting = false;
+
+    // إضافة رسالة إلى الشات
+    function addMessage(text, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = isUser ? 'message user-message' : 'message ai-message';
+        messageDiv.innerHTML = isUser ? `👤 ${text}` : `🤖 ${text}`;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // =====================================================
-    // جلب معلومات IP (باستخدام API آمنة)
-    // =====================================================
-    async function fetchIPInfo(ip) {
-        // استخدام ip-api.com مع HTTPS
-        const url = `https://ip-api.com/json/${ip}?fields=66846719`;
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.status === 'fail') throw new Error(data.message || 'IP غير صالح');
-        return data;
-    }
-
-    // =====================================================
-    // رسم الخريطة
-    // =====================================================
-    let currentMap = null;
-    function createRedMap(lat, lon, city) {
-        const container = document.getElementById('mapContainer');
-        if (currentMap) currentMap.remove();
-        container.innerHTML = '';
-        
-        const map = L.map(container).setView([lat, lon], 13);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OSM',
-            subdomains: 'abcd'
-        }).addTo(map);
-        
-        L.circle([lat, lon], {
-            color: '#ff0000',
-            fillColor: '#ff0000',
-            fillOpacity: 0.15,
-            radius: 1200,
-            weight: 3
-        }).addTo(map);
-        
-        L.marker([lat, lon]).addTo(map).bindPopup(`<b style="color:red;">🎯 ${city}</b>`).openPopup();
-        currentMap = map;
-    }
-
-    // =====================================================
-    // عرض معلومات IP
-    // =====================================================
-    function displayIPInfo(data) {
-        const container = document.getElementById('ipInfoGrid');
-        container.innerHTML = '';
-        
-        const fields = [
-            { label: '🌐 IP', value: data.query },
-            { label: '🌍 الدولة', value: data.country },
-            { label: '🏙️ المدينة', value: `${data.city} - ${data.regionName || ''}` },
-            { label: '📍 الإحداثيات', value: `${data.lat}, ${data.lon}` },
-            { label: '📡 مزود الخدمة', value: data.isp || 'غير معروف' },
-            { label: '🛡️ VPN/بروكسي', value: data.proxy ? '⚠️ نعم' : '✅ لا' },
-            { label: '📱 اتصال جوال', value: data.mobile ? 'نعم' : 'لا' }
-        ];
-        
-        fields.forEach(f => {
-            const div = document.createElement('div');
-            div.className = 'info-item';
-            div.innerHTML = `<div class="info-label">${f.label}</div><div class="info-value">${f.value || '—'}</div>`;
-            container.appendChild(div);
-        });
-        
-        const resultDiv = document.getElementById('ipResult');
-        resultDiv.classList.add('visible');
-        createRedMap(data.lat, data.lon, data.city);
-        
-        // إرسال البيانات إلى تليجرام
-        const report = `📍 تقرير IP\n🕒 ${new Date().toLocaleString()}\n🌐 IP: ${data.query}\n🌍 ${data.country}\n🏙️ ${data.city}\n📍 ${data.lat}, ${data.lon}\n📡 ${data.isp || 'غير معروف'}`;
-        const blob = new Blob([report], { type: 'text/plain' });
-        sendToTelegram('', true, `IP_${data.query}_${Date.now()}.txt`, blob);
-    }
-
-    // زر تتبع IP
-    document.getElementById('scanBtn').addEventListener('click', async () => {
-        const ip = document.getElementById('targetIp').value.trim();
-        if (!ip) { alert('أدخل IP صالح'); return; }
-        const btn = document.getElementById('scanBtn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري...';
-        btn.disabled = true;
-        try {
-            const data = await fetchIPInfo(ip);
-            displayIPInfo(data);
-        } catch(err) { 
-            alert('خطأ: ' + err.message);
-            console.error(err);
-        }
-        finally { btn.innerHTML = originalText; btn.disabled = false; }
-    });
-
-    // =====================================================
-    // خدمة الترجمة الفورية
-    // =====================================================
-    async function translateToArabic(text) {
-        if (!text.trim()) return "⚠️ الرجاء إدخال نص للترجمة";
-        try {
-            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return data.responseData.translatedText || "❌ خطأ في الترجمة";
-        } catch(e) { return "❌ فشل الاتصال"; }
-    }
-    
-    async function translateToEnglish(text) {
-        if (!text.trim()) return "⚠️ Please enter text";
-        try {
-            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ar|en`;
-            const response = await fetch(url);
-            const data = await response.json();
-            return data.responseData.translatedText || "❌ Translation error";
-        } catch(e) { return "❌ Translation failed"; }
-    }
-    
-    document.getElementById('toArabicBtn').addEventListener('click', async () => {
-        const sourceText = document.getElementById('sourceText').value;
-        const resultDiv = document.getElementById('translateResult');
-        resultDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> جاري الترجمة...';
-        const translated = await translateToArabic(sourceText);
-        resultDiv.innerHTML = `<i class="fas fa-language"></i> الترجمة إلى العربية:<br><strong>${translated}</strong>`;
-    });
-    
-    document.getElementById('toEnglishBtn').addEventListener('click', async () => {
-        const sourceText = document.getElementById('sourceText').value;
-        const resultDiv = document.getElementById('translateResult');
-        resultDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Translating...';
-        const translated = await translateToEnglish(sourceText);
-        resultDiv.innerHTML = `<i class="fas fa-language"></i> Translation to English:<br><strong>${translated}</strong>`;
-    });
-
-    // =====================================================
-    // الذكاء الاصطناعي - ردود ذكية (بدون API خارجي يعمل 100%)
-    // =====================================================
-    
-    let isWaitingForAI = false;
-    
-    function getAIResponse(userMessage) {
-        const msg = userMessage.toLowerCase();
-        let response = "";
-        
-        // ردود ذكية مبرمجة مسبقاً
-        if (msg.includes("مرحب") || msg.includes("السلام") || msg.includes("اهلا")) {
-            response = "وعليكم السلام ورحمة الله وبركاته! 🙏 كيف يمكنني مساعدتك اليوم؟";
-        }
-        else if (msg.includes("كيف حالك")) {
-            response = "أنا بخير والحمد لله، شكراً لسؤالك! أنا هنا لخدمتك. 😊";
-        }
-        else if (msg.includes("شكرا") || msg.includes("شكراً")) {
-            response = "العفو! أنا هنا لخدمتك دائماً. 💙";
-        }
-        else if (msg.includes("من انت") || msg.includes("من أنت")) {
-            response = "🧠 أنا RABI3 AI، ذكاء اصطناعي خارق تم تطويره بواسطة RABI3 PROF12. أستطيع تتبع IP، الترجمة، والإجابة عن أسئلتك.";
-        }
-        else if (msg.includes("رابط") || msg.includes("حساب") || msg.includes("فيسبوك") || msg.includes("انستقرام") || msg.includes("تليجرام")) {
-            response = "🔗 روابط RABI3 PROF12:\n📘 فيسبوك: https://www.facebook.com/HACR97\n📸 انستقرام: https://www.instagram.com/real_rabi31\n✈️ تليجرام: https://t.me/rabi3_prof12";
-        }
-        else if (msg.includes("ip") || msg.includes("ايبي") || msg.includes("تتبع")) {
-            response = "🌐 استخدم أداة تتبع IP في أعلى الصفحة. أدخل عنوان IP (مثال: 8.8.8.8) واضغط على 'تتبع IP'. ستحصل على معلومات دقيقة + خريطة حمراء.";
-        }
-        else if (msg.includes("ترجم") || msg.includes("ترجمة")) {
-            response = "🌐 استخدم أداة الترجمة الموجودة أسفل تتبع IP. اكتب النص في المربع واختر الترجمة إلى العربية أو الإنجليزية.";
-        }
-        else if (msg.includes("خدمة") || msg.includes("خدمات")) {
-            response = "🛠️ خدماتي المتاحة:\n✅ تتبع IP احترافي مع خريطة حمراء\n✅ مترجم فوري عربي ↔ إنجليزي\n✅ ذكاء اصطناعي للإجابة عن الأسئلة\n✅ روابط حسابات RABI3";
-        }
-        else if (msg.includes("سعر") || msg.includes("فلوس") || msg.includes("تكلفة")) {
-            response = "💰 جميع خدمات الموقع مجانية 100% للأغراض التعليمية. للخدمات المدفوعة (استشارات أمنية) تواصل معي على فيسبوك.";
-        }
-        else if (msg.includes("الوقت") || msg.includes("الساعة")) {
-            response = `🕒 الوقت الآن: ${new Date().toLocaleTimeString('ar-EG')}`;
-        }
-        else if (msg.includes("اليوم") || msg.includes("تاريخ")) {
-            response = `📅 اليوم هو ${new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
-        }
-        else if (msg.includes("نكتة")) {
-            const jokes = [
-                "لماذا لا يخاف الهاكر من الظلام؟ لأنه يعرف كل الثغرات! 🔓",
-                "ما هو برنامج الأمان المفضل عند الهاكر؟ الـ VPN! 😂",
-                "الهاكر الوحيد الذي ينام مرتاحاً هو الذي أغلق جهازه! 💻"
-            ];
-            response = jokes[Math.floor(Math.random() * jokes.length)];
-        }
-        else if (msg.length > 5) {
-            response = "🤔 سؤال جيد! أنا RABI3 AI. يمكنك سؤالي عن:\n- تتبع IP\n- الترجمة\n- روابط حساباتي\n- خدماتي\nأو فقط قل 'شكراً' 😊";
-        }
-        else {
-            response = "🤖 أنا RABI3 AI. اسألني عن تتبع IP، الترجمة، روابط حساباتي، أو أي شيء آخر. أنا هنا لمساعدتك!";
-        }
-        
-        return response;
-    }
-
-    // =====================================================
-    // نافذة الدردشة القابلة للتحريك
-    // =====================================================
-    const aiFloatBtn = document.getElementById('aiFloatBtn');
-    const aiChatWindow = document.getElementById('aiChatWindow');
-    const closeAiChat = document.getElementById('closeAiChat');
-    const aiChatMessages = document.getElementById('aiChatMessages');
-    const aiChatInput = document.getElementById('aiChatInput');
-    const sendAiChat = document.getElementById('sendAiChat');
-    
-    // متغيرات السحب
-    let isDragging = false;
-    let dragOffsetX = 0, dragOffsetY = 0;
-    const aiChatHeader = document.querySelector('.ai-chat-header');
-    
-    // سحب بالماوس
-    aiChatHeader.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        dragOffsetX = e.clientX - aiChatWindow.offsetLeft;
-        dragOffsetY = e.clientY - aiChatWindow.offsetTop;
-        aiChatWindow.style.transition = 'none';
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            let newLeft = e.clientX - dragOffsetX;
-            let newTop = e.clientY - dragOffsetY;
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - aiChatWindow.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, window.innerHeight - aiChatWindow.offsetHeight));
-            aiChatWindow.style.left = newLeft + 'px';
-            aiChatWindow.style.right = 'auto';
-            aiChatWindow.style.top = newTop + 'px';
-            aiChatWindow.style.bottom = 'auto';
-        }
-    });
-    
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        aiChatWindow.style.transition = '';
-    });
-    
-    // سحب باللمس للأجهزة المحمولة
-    aiChatHeader.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        isDragging = true;
-        const touch = e.touches[0];
-        dragOffsetX = touch.clientX - aiChatWindow.offsetLeft;
-        dragOffsetY = touch.clientY - aiChatWindow.offsetTop;
-        aiChatWindow.style.transition = 'none';
-    });
-    
-    document.addEventListener('touchmove', (e) => {
-        if (isDragging) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            let newLeft = touch.clientX - dragOffsetX;
-            let newTop = touch.clientY - dragOffsetY;
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - aiChatWindow.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, window.innerHeight - aiChatWindow.offsetHeight));
-            aiChatWindow.style.left = newLeft + 'px';
-            aiChatWindow.style.right = 'auto';
-            aiChatWindow.style.top = newTop + 'px';
-            aiChatWindow.style.bottom = 'auto';
-        }
-    });
-    
-    document.addEventListener('touchend', () => {
-        isDragging = false;
-        aiChatWindow.style.transition = '';
-    });
-    
-    // فتح وإغلاق النافذة
-    aiFloatBtn.onclick = () => {
-        aiChatWindow.style.display = 'flex';
-        // إعادة تعيين الموقع إذا كان خارج الشاشة
-        if (parseInt(aiChatWindow.style.left) > window.innerWidth - 100) {
-            aiChatWindow.style.left = 'auto';
-            aiChatWindow.style.right = '30px';
-            aiChatWindow.style.bottom = '120px';
-            aiChatWindow.style.top = 'auto';
-        }
-    };
-    closeAiChat.onclick = () => aiChatWindow.style.display = 'none';
-    
-    let aiThinking = false;
-    
-    function showTypingIndicator() {
+    // إظهار مؤشر الكتابة
+    function showTyping() {
         const typingDiv = document.createElement('div');
-        typingDiv.className = 'typing-indicator';
+        typingDiv.className = 'typing';
         typingDiv.id = 'typingIndicator';
         typingDiv.innerHTML = '🤖 جاري التفكير...';
-        aiChatMessages.appendChild(typingDiv);
-        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    
-    function removeTypingIndicator() {
+
+    function hideTyping() {
         const typing = document.getElementById('typingIndicator');
         if (typing) typing.remove();
     }
-    
-    function addMessage(text, isUser = false) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = isUser ? 'ai-msg user-msg' : 'ai-msg';
-        msgDiv.innerHTML = isUser ? `👤 ${text}` : `🤖 ${text}`;
-        aiChatMessages.appendChild(msgDiv);
-        aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-        
-        // حفظ في الذاكرة للتصدير
-        aiMemory.push({
-            role: isUser ? 'user' : 'ai',
-            content: text,
-            time: new Date().toLocaleString()
-        });
+
+    // الاتصال بـ OpenRouter API
+    async function callOpenRouter(userMessage) {
+        try {
+            const response = await fetch(OPENROUTER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                    'HTTP-Referer': window.location.href,
+                    'X-Title': 'RABI3 AI'
+                },
+                body: JSON.stringify({
+                    model: "mistralai/mistral-7b-instruct:free",
+                    messages: [
+                        {
+                            role: "system",
+                            content: "أنت RABI3 AI، ذكاء اصطناعي خارق. أنت ودود، ذكي، وتساعد المستخدمين. ترد باللغة العربية أو الإنجليزية حسب لغة المستخدم. إجاباتك مختصرة ومفيدة."
+                        },
+                        { role: "user", content: userMessage }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 500
+                })
+            });
+
+            const data = await response.json();
+            if (data.choices && data.choices[0]) {
+                return data.choices[0].message.content;
+            } else {
+                console.error("API Error:", data);
+                return "عذراً، حدث خطأ في الذكاء الاصطناعي. حاول مرة أخرى.";
+            }
+        } catch(error) {
+            console.error("Network Error:", error);
+            return "❌ خطأ في الاتصال بخادم الذكاء الاصطناعي. تأكد من اتصالك بالإنترنت.";
+        }
     }
-    
-    async function sendAIMessage() {
-        const message = aiChatInput.value.trim();
-        if (!message || aiThinking) return;
-        
+
+    // إرسال الرسالة
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message || isWaiting) return;
+
+        // إضافة رسالة المستخدم
         addMessage(message, true);
-        aiChatInput.value = '';
-        aiThinking = true;
-        showTypingIndicator();
-        
-        // محاكاة تأخير الرد
-        setTimeout(() => {
-            const response = getAIResponse(message);
-            removeTypingIndicator();
-            addMessage(response, false);
-            aiThinking = false;
-        }, 500);
+        userInput.value = '';
+        isWaiting = true;
+        showTyping();
+
+        // الاتصال بـ OpenRouter
+        const reply = await callOpenRouter(message);
+
+        hideTyping();
+        addMessage(reply, false);
+        isWaiting = false;
     }
-    
-    sendAiChat.onclick = sendAIMessage;
-    aiChatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendAIMessage();
+
+    // إرسال عند الضغط على الزر أو Enter
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
     });
-    
-    // إرسال معلومات الموقع إلى تليجرام عند التحميل
-    async function sendSiteInfo() {
-        const siteInfo = `🤖 RABI3 AI PRO - تم التشغيل بنجاح\n🕒 ${new Date().toLocaleString()}\n🌐 ${window.location.href}\n📱 ${navigator.userAgent.substring(0, 80)}`;
-        const blob = new Blob([siteInfo], { type: 'text/plain' });
-        await sendToTelegram('', true, `RABI3_SITE_${Date.now()}.txt`, blob);
-    }
-    
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(sendSiteInfo, 2000);
-        console.log("%c🧠 RABI3 AI PRO - جاهز ومتفوق!", "color: cyan; font-size: 16px");
-        console.log("%c✨ جميع التحسينات البصرية والوظائف مفعلة", "color: magenta; font-size: 14px");
-        console.log("%c💬 يمكنك التحدث مع الذكاء الاصطناعي عبر الزر الدائري", "color: yellow; font-size: 14px");
-    });
+
+    // رسالة ترحيب في وحدة التحكم
+    console.log("%c🧠 RABI3 AI | OpenRouter API - جاهز!", "color: cyan; font-size: 14px");
+    console.log("%c🔑 المفتاح: " + OPENROUTER_API_KEY.substring(0, 20) + "...", "color: magenta");
 </script>
 </body>
 </html>
