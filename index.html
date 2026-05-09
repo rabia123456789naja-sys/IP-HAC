@@ -1,282 +1,473 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>RABI3 AI | OpenRouter</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: linear-gradient(135deg, #0a0f1a, #03060c);
-            font-family: 'Cairo', sans-serif;
-            color: #eef5ff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .chat-container {
-            width: 100%;
-            max-width: 800px;
-            background: rgba(10, 20, 40, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 32px;
-            border: 1px solid cyan;
-            box-shadow: 0 0 30px rgba(0,255,255,0.2);
-            overflow: hidden;
-        }
-        .chat-header {
-            background: linear-gradient(90deg, #0a1a2a, #1a0033);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid magenta;
-        }
-        .chat-header h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, #fff, #0ff, #f0f);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .chat-header p {
-            font-size: 0.8rem;
-            color: #88aaff;
-            margin-top: 5px;
-        }
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        .social-links a {
-            color: #0ff;
-            font-size: 1.3rem;
-            transition: 0.3s;
-        }
-        .social-links a:hover {
-            color: magenta;
-            transform: translateY(-3px);
-        }
-        .chat-messages {
-            height: 400px;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .message {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 20px;
-            word-break: break-word;
-        }
-        .user-message {
-            background: #2a1a4a;
-            align-self: flex-end;
-            border-right: 3px solid magenta;
-        }
-        .ai-message {
-            background: #1a1a2a;
-            align-self: flex-start;
-            border-left: 3px solid cyan;
-        }
-        .typing {
-            background: #1a1a2a;
-            align-self: flex-start;
-            padding: 10px 15px;
-            border-radius: 20px;
-            border-left: 3px solid cyan;
-            font-style: italic;
-            color: #aaa;
-        }
-        .chat-input {
-            display: flex;
-            padding: 15px;
-            gap: 10px;
-            border-top: 1px solid magenta;
-            background: rgba(0,0,0,0.3);
-        }
-        .chat-input input {
-            flex: 1;
-            background: #0a1a2a;
-            border: 1px solid cyan;
-            border-radius: 60px;
-            padding: 12px 18px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-        }
-        .chat-input input:focus {
-            border-color: magenta;
-        }
-        .chat-input button {
-            background: magenta;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 24px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .chat-input button:hover {
-            background: cyan;
-            color: black;
-        }
-        .footer {
-            text-align: center;
-            padding: 12px;
-            font-size: 0.7rem;
-            color: #6c8f8c;
-            border-top: 1px solid rgba(0,255,255,0.2);
-        }
-        @media (max-width: 600px) {
-            .chat-messages { height: 350px; }
-            .message { max-width: 90%; }
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Chat — OpenRouter</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg0:#07080d;
+  --bg1:#0e1018;
+  --bg2:#141720;
+  --glass:#ffffff08;
+  --glass2:#ffffff12;
+  --border:#ffffff10;
+  --border2:#ffffff20;
+  --accent:#6ee7f7;
+  --accent2:#a78bfa;
+  --text:#e4e8f5;
+  --muted:#5a6070;
+  --muted2:#8890a0;
+  --danger:#f87171;
+  --r:16px;
+}
+
+html,body{height:100%}
+
+body{
+  font-family:'Tajawal',sans-serif;
+  background:var(--bg0);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* animated background */
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18;animation:drift 12s ease-in-out infinite alternate}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,#6ee7f7,transparent);top:-100px;right:-100px;animation-duration:14s}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,#a78bfa,transparent);bottom:-80px;left:-80px;animation-duration:10s;animation-delay:-5s}
+.orb3{width:300px;height:300px;background:radial-gradient(circle,#34d399,transparent);top:40%;left:30%;animation-duration:16s;animation-delay:-8s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.1)}}
+
+/* layout */
+.app{
+  position:relative;z-index:1;
+  width:100%;max-width:720px;
+  height:100vh;
+  display:flex;flex-direction:column;
+  padding:20px 16px;
+  gap:12px;
+}
+
+/* header */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  animation:slideDown .5s ease;
+}
+@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:10px;
+  display:grid;place-items:center;
+  font-size:18px;
+  box-shadow:0 0 20px #6ee7f730;
+}
+.logo-text{font-size:1.1rem;font-weight:700;letter-spacing:-.3px}
+.logo-text span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.header-right{display:flex;align-items:center;gap:10px}
+
+.model-pill{
+  background:var(--glass2);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:5px 5px 5px 12px;
+  display:flex;align-items:center;gap:6px;
+  cursor:pointer;
+  transition:background .2s;
+  font-size:.82rem;color:var(--muted2);
+}
+.model-pill:hover{background:#ffffff18}
+.model-pill select{
+  background:transparent;border:none;
+  color:var(--text);font-family:inherit;
+  font-size:.82rem;cursor:pointer;outline:none;
+  max-width:160px;
+}
+.model-pill select option{background:#1a1d2e;color:var(--text)}
+
+/* api key bar */
+.key-bar{
+  display:flex;gap:8px;align-items:center;
+  padding:10px 16px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  animation:slideDown .5s ease .1s both;
+}
+.key-icon{font-size:1rem;flex-shrink:0}
+.key-bar input{
+  flex:1;background:transparent;border:none;
+  color:var(--text);font-family:inherit;font-size:.88rem;
+  outline:none;direction:ltr;
+  letter-spacing:.5px;
+}
+.key-bar input::placeholder{color:var(--muted);letter-spacing:0}
+.key-status{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--muted);flex-shrink:0;
+  transition:all .3s;
+}
+.key-status.ok{background:#22c55e;box-shadow:0 0 8px #22c55e88}
+.key-status.bad{background:var(--danger);box-shadow:0 0 8px #f8717188}
+
+/* chatbox */
+.chatbox{
+  flex:1;overflow-y:auto;
+  display:flex;flex-direction:column;gap:16px;
+  padding:20px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  animation:slideDown .5s ease .2s both;
+  scroll-behavior:smooth;
+}
+.chatbox::-webkit-scrollbar{width:4px}
+.chatbox::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* empty state */
+.empty{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:12px;color:var(--muted);text-align:center;
+}
+.empty-icon{
+  width:64px;height:64px;
+  background:linear-gradient(135deg,var(--accent)22,var(--accent2)22);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  display:grid;place-items:center;
+  font-size:28px;
+  margin-bottom:4px;
+}
+.empty h3{font-size:1rem;font-weight:500;color:var(--muted2)}
+.empty p{font-size:.82rem;max-width:260px;line-height:1.6}
+
+/* messages */
+.msg{
+  display:flex;gap:10px;align-items:flex-start;
+  animation:fadeUp .3s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.msg.user{flex-direction:row-reverse}
+
+.avatar{
+  width:32px;height:32px;border-radius:10px;
+  flex-shrink:0;display:grid;place-items:center;
+  font-size:15px;
+}
+.msg.user .avatar{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.msg.assistant .avatar{background:var(--glass2);border:1px solid var(--border2)}
+
+.bubble{
+  max-width:78%;
+  padding:12px 16px;
+  border-radius:14px;
+  font-size:.92rem;line-height:1.7;
+}
+.msg.user .bubble{
+  background:linear-gradient(135deg,#6ee7f718,#a78bfa18);
+  border:1px solid #6ee7f730;
+  border-top-right-radius:4px;
+  text-align:right;
+}
+.msg.assistant .bubble{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-top-left-radius:4px;
+}
+
+/* typing */
+.typing-dots{display:flex;gap:5px;padding:4px 0}
+.typing-dots span{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--accent);opacity:.7;
+  animation:blink 1.2s infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* error */
+.error-msg{
+  background:#f8717115;border:1px solid #f8717130;
+  border-radius:10px;padding:10px 14px;
+  font-size:.85rem;color:var(--danger);
+  display:flex;align-items:center;gap:8px;
+}
+
+/* input area */
+.input-area{
+  display:flex;gap:8px;align-items:flex-end;
+  padding:12px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  animation:slideDown .5s ease .3s both;
+  transition:border-color .2s;
+}
+.input-area:focus-within{border-color:var(--border2)}
+
+textarea{
+  flex:1;background:transparent;border:none;
+  color:var(--text);font-family:inherit;font-size:.93rem;
+  outline:none;resize:none;line-height:1.5;
+  max-height:120px;min-height:24px;
+  padding:2px 4px;
+}
+textarea::placeholder{color:var(--muted)}
+
+.actions{display:flex;gap:8px;align-items:center}
+
+.btn-clear{
+  width:36px;height:36px;border-radius:10px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;font-size:16px;
+  display:grid;place-items:center;
+  transition:all .2s;
+}
+.btn-clear:hover{border-color:var(--danger);color:var(--danger);background:#f8717110}
+
+.btn-send{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;cursor:pointer;font-size:18px;
+  display:grid;place-items:center;
+  box-shadow:0 0 20px #6ee7f730;
+  transition:all .2s;
+}
+.btn-send:hover{transform:scale(1.05);box-shadow:0 0 30px #6ee7f750}
+.btn-send:active{transform:scale(.96)}
+.btn-send:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+.hint-footer{
+  text-align:center;font-size:.75rem;color:var(--muted);
+  animation:slideDown .5s ease .4s both;
+}
+.hint-footer a{color:var(--accent);text-decoration:none}
+.hint-footer a:hover{text-decoration:underline}
+</style>
 </head>
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">
-        <h1>🧠 RABI3 AI | OpenRouter</h1>
-        <p>ذكاء اصطناعي خارق - اسألني أي شيء</p>
-        <div class="social-links">
-            <a href="https://www.facebook.com/HACR97" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/real_rabi31" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://t.me/rabi3_prof12" target="_blank"><i class="fab fa-telegram-plane"></i></a>
-        </div>
-    </div>
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
 
-    <div class="chat-messages" id="chatMessages">
-        <div class="message ai-message">🤖 مرحباً! أنا RABI3 AI، ذكاء اصطناعي خارق يعمل عبر OpenRouter. اسألني أي شيء وسأجيبك فوراً!</div>
-        <div class="message ai-message">🔗 روابط RABI3: فيسبوك، انستقرام، تليجرام (موجودة في الأعلى)</div>
-    </div>
+<div class="app">
 
-    <div class="chat-input">
-        <input type="text" id="userInput" placeholder="اكتب سؤالك هنا...">
-        <button id="sendBtn"><i class="fas fa-paper-plane"></i> إرسال</button>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text"><span>AI</span> Chat</div>
     </div>
+    <div class="header-right">
+      <div class="model-pill">
+        <span>🤖</span>
+        <select id="modelSelect">
+          <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
+          <option value="google/gemini-flash-1.5">Gemini 1.5 Flash</option>
+          <option value="meta-llama/llama-3.3-70b-instruct">LLaMA 3.3 70B</option>
+          <option value="meta-llama/llama-3.1-8b-instruct:free">LLaMA 3.1 8B (Free)</option>
+          <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
+          <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (Free)</option>
+          <option value="anthropic/claude-3.5-haiku">Claude 3.5 Haiku</option>
+          <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-    <div class="footer">
-        © RABI3 PROF12 | يعمل بتقنية OpenRouter AI
+  <!-- API Key -->
+  <div class="key-bar">
+    <span class="key-icon">🔑</span>
+    <input type="password" id="apiKey" placeholder="sk-or-v1-xxxxxxxxxxxxxxxx" dir="ltr" autocomplete="off"/>
+    <div class="key-status" id="keyStatus"></div>
+  </div>
+
+  <!-- Chat -->
+  <div class="chatbox" id="chatbox">
+    <div class="empty" id="emptyState">
+      <div class="empty-icon">✦</div>
+      <h3>مرحباً! كيف يمكنني مساعدتك؟</h3>
+      <p>أدخل مفتاح OpenRouter واختر النموذج وابدأ المحادثة</p>
     </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <textarea id="userInput" rows="1" placeholder="اكتب رسالتك... (Enter للإرسال)"></textarea>
+    <div class="actions">
+      <button class="btn-clear" onclick="clearChat()" title="مسح">🗑️</button>
+      <button class="btn-send" id="sendBtn" onclick="sendMessage()" title="إرسال">➤</button>
+    </div>
+  </div>
+
+  <div class="hint-footer">
+    احصل على مفتاحك المجاني من <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>
+    — المفتاح لا يُحفظ في أي مكان 🔒
+  </div>
+
 </div>
 
 <script>
-    // =====================================================
-    // مفتاح OpenRouter API (خاص بك)
-    // =====================================================
-    const OPENROUTER_API_KEY = "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";
-    const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+let history = [];
 
-    // عناصر الصفحة
-    const chatMessages = document.getElementById('chatMessages');
-    const userInput = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
+// Auto-resize textarea
+const ta = document.getElementById("userInput");
+ta.addEventListener("input", () => {
+  ta.style.height = "auto";
+  ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
+});
 
-    let isWaiting = false;
+// Enter to send
+ta.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
 
-    // إضافة رسالة إلى الشات
-    function addMessage(text, isUser = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = isUser ? 'message user-message' : 'message ai-message';
-        messageDiv.innerHTML = isUser ? `👤 ${text}` : `🤖 ${text}`;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+// Key status indicator
+document.getElementById("apiKey").addEventListener("input", function() {
+  const st = document.getElementById("keyStatus");
+  const v = this.value.trim();
+  if (v.startsWith("sk-or-")) { st.className = "key-status ok"; }
+  else if (v.length > 5)       { st.className = "key-status bad"; }
+  else                         { st.className = "key-status"; }
+});
 
-    // إظهار مؤشر الكتابة
-    function showTyping() {
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'typing';
-        typingDiv.id = 'typingIndicator';
-        typingDiv.innerHTML = '🤖 جاري التفكير...';
-        chatMessages.appendChild(typingDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+async function sendMessage() {
+  const key   = document.getElementById("apiKey").value.trim();
+  const model = document.getElementById("modelSelect").value;
+  const text  = ta.value.trim();
+  const btn   = document.getElementById("sendBtn");
 
-    function hideTyping() {
-        const typing = document.getElementById('typingIndicator');
-        if (typing) typing.remove();
-    }
+  if (!key)  { showError("⚠️ أدخل مفتاح OpenRouter أولاً!"); return; }
+  if (!text) return;
 
-    // الاتصال بـ OpenRouter API
-    async function callOpenRouter(userMessage) {
-        try {
-            const response = await fetch(OPENROUTER_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                    'HTTP-Referer': window.location.href,
-                    'X-Title': 'RABI3 AI'
-                },
-                body: JSON.stringify({
-                    model: "mistralai/mistral-7b-instruct:free",
-                    messages: [
-                        {
-                            role: "system",
-                            content: "أنت RABI3 AI، ذكاء اصطناعي خارق. أنت ودود، ذكي، وتساعد المستخدمين. ترد باللغة العربية أو الإنجليزية حسب لغة المستخدم. إجاباتك مختصرة ومفيدة."
-                        },
-                        { role: "user", content: userMessage }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 500
-                })
-            });
+  removeEmpty();
+  history.push({ role: "user", content: text });
+  addMessage("user", text);
+  ta.value = ""; ta.style.height = "auto";
+  btn.disabled = true;
 
-            const data = await response.json();
-            if (data.choices && data.choices[0]) {
-                return data.choices[0].message.content;
-            } else {
-                console.error("API Error:", data);
-                return "عذراً، حدث خطأ في الذكاء الاصطناعي. حاول مرة أخرى.";
-            }
-        } catch(error) {
-            console.error("Network Error:", error);
-            return "❌ خطأ في الاتصال بخادم الذكاء الاصطناعي. تأكد من اتصالك بالإنترنت.";
-        }
-    }
+  const typingEl = addTyping();
 
-    // إرسال الرسالة
-    async function sendMessage() {
-        const message = userInput.value.trim();
-        if (!message || isWaiting) return;
-
-        // إضافة رسالة المستخدم
-        addMessage(message, true);
-        userInput.value = '';
-        isWaiting = true;
-        showTyping();
-
-        // الاتصال بـ OpenRouter
-        const reply = await callOpenRouter(message);
-
-        hideTyping();
-        addMessage(reply, false);
-        isWaiting = false;
-    }
-
-    // إرسال عند الضغط على الزر أو Enter
-    sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`,
+        "HTTP-Referer": window.location.href,
+        "X-Title": "AI Chat"
+      },
+      body: JSON.stringify({
+        model,
+        messages: history,
+        max_tokens: 1024,
+        temperature: 0.7
+      })
     });
 
-    // رسالة ترحيب في وحدة التحكم
-    console.log("%c🧠 RABI3 AI | OpenRouter API - جاهز!", "color: cyan; font-size: 14px");
-    console.log("%c🔑 المفتاح: " + OPENROUTER_API_KEY.substring(0, 20) + "...", "color: magenta");
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error?.message || `خطأ ${res.status}`);
+    }
+
+    const reply = data.choices[0].message.content;
+    history.push({ role: "assistant", content: reply });
+    typingEl.remove();
+    addMessage("assistant", reply);
+
+  } catch(err) {
+    typingEl.remove();
+    history.pop();
+    showError("❌ " + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function addMessage(role, content) {
+  const box = document.getElementById("chatbox");
+  const isUser = role === "user";
+
+  const msg = document.createElement("div");
+  msg.className = `msg ${role}`;
+  msg.innerHTML = `
+    <div class="avatar">${isUser ? "👤" : "✦"}</div>
+    <div class="bubble">${escHtml(content).replace(/\n/g,"<br>")}</div>
+  `;
+  box.appendChild(msg);
+  box.scrollTop = box.scrollHeight;
+}
+
+function addTyping() {
+  const box = document.getElementById("chatbox");
+  const el = document.createElement("div");
+  el.className = "msg assistant";
+  el.innerHTML = `
+    <div class="avatar">✦</div>
+    <div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+  `;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+  return el;
+}
+
+function showError(msg) {
+  const box = document.getElementById("chatbox");
+  removeEmpty();
+  const el = document.createElement("div");
+  el.className = "error-msg";
+  el.textContent = msg;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+  setTimeout(() => el.remove(), 6000);
+}
+
+function clearChat() {
+  history = [];
+  const box = document.getElementById("chatbox");
+  box.innerHTML = `
+    <div class="empty" id="emptyState">
+      <div class="empty-icon">✦</div>
+      <h3>تمت إعادة التعيين!</h3>
+      <p>ابدأ محادثة جديدة</p>
+    </div>`;
+}
+
+function removeEmpty() {
+  document.getElementById("emptyState")?.remove();
+}
+
+function escHtml(t) {
+  return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
 </script>
 </body>
 </html>
