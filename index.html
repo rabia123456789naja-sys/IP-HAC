@@ -1,700 +1,1017 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>RABI3 | Cyber Security</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --cyan: #00f5ff;
-            --magenta: #ff00aa;
-            --bg: #060c14;
-            --card: rgba(10, 22, 38, 0.85);
-            --text: #dff0ff;
-            --glow-c: 0 0 18px rgba(0,245,255,0.4);
-            --glow-m: 0 0 18px rgba(255,0,170,0.4);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg);
-            font-family: 'Cairo', sans-serif;
-            color: var(--text);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RABI3 AI PRO | الذكاء الخارق</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --c: #00ffff;
+  --m: #ff00ff;
+  --g: #00ff88;
+  --y: #ffee00;
+  --dark: #020510;
+  --dark2: #060d1f;
+  --dark3: #0a1428;
+  --glass: rgba(0,255,255,0.04);
+  --glass2: rgba(0,255,255,0.08);
+  --border: rgba(0,255,255,0.2);
+  --border2: rgba(0,255,255,0.4);
+}
 
-        /* ===== BACKGROUND ===== */
-        .bg-grid {
-            position: fixed; inset: 0; z-index: 0;
-            background-image:
-                linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-        }
-        .bg-orb {
-            position: fixed; border-radius: 50%; filter: blur(100px);
-            pointer-events: none; z-index: 0;
-        }
-        .orb1 { width: 500px; height: 500px; background: rgba(0,245,255,0.06); top: -100px; left: -100px; }
-        .orb2 { width: 400px; height: 400px; background: rgba(255,0,170,0.06); bottom: -100px; right: -100px; }
+*{margin:0;padding:0;box-sizing:border-box}
 
-        .container { max-width: 1300px; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
+::selection{background:#00ffff33;color:#fff}
 
-        /* ===== HEADER ===== */
-        .header {
-            background: rgba(3, 9, 18, 0.92);
-            backdrop-filter: blur(16px);
-            border-radius: 24px;
-            padding: 18px 30px;
-            margin-bottom: 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            border: 1px solid rgba(0,245,255,0.2);
-            box-shadow: var(--glow-c), inset 0 1px 0 rgba(0,245,255,0.1);
-        }
-        .profile { display: flex; align-items: center; gap: 18px; }
-        .avatar {
-            width: 68px; height: 68px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--cyan), var(--magenta));
-            padding: 2px; flex-shrink: 0;
-        }
-        .avatar-inner {
-            width: 100%; height: 100%; border-radius: 50%;
-            background: #0a1420;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem;
-        }
-        .name {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.5rem; font-weight: 900;
-            background: linear-gradient(120deg, var(--cyan), #88ffcc, var(--magenta));
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-        .tagline { font-size: 0.8rem; color: rgba(0,245,255,0.6); margin-top: 2px; }
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#020510}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--c),var(--m));border-radius:4px}
 
-        .header-right { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-        .lang-switch {
-            background: transparent;
-            color: var(--cyan);
-            padding: 8px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 700;
-            font-family: 'Cairo', sans-serif;
-            border: 1px solid var(--cyan);
-            transition: 0.25s;
-            font-size: 0.9rem;
-        }
-        .lang-switch:hover { background: var(--cyan); color: #000; box-shadow: var(--glow-c); }
-        .social-icons a {
-            color: rgba(200,230,255,0.7);
-            font-size: 1.6rem;
-            margin-right: 4px;
-            transition: 0.3s;
-            display: inline-block;
-        }
-        .social-icons a:hover { transform: translateY(-4px); filter: drop-shadow(0 0 8px var(--cyan)); color: var(--cyan); }
+body {
+  background: var(--dark);
+  font-family: 'Cairo', sans-serif;
+  color: #d0e8ff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
 
-        /* ===== SECTION TITLE ===== */
-        .section-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 1rem;
-            letter-spacing: 3px;
-            color: var(--cyan);
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .section-title::after {
-            content: '';
-            flex: 1; height: 1px;
-            background: linear-gradient(90deg, rgba(0,245,255,0.4), transparent);
-        }
+/* ── CANVAS BACKGROUND ── */
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 
-        /* ===== SERVICES GRID ===== */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        .service-card {
-            background: var(--card);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 24px;
-            border: 1px solid rgba(0,245,255,0.12);
-            border-top: 2px solid var(--cyan);
-            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .service-card::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(0,245,255,0.04), transparent);
-            opacity: 0; transition: 0.3s;
-        }
-        .service-card:hover {
-            transform: translateY(-6px) scale(1.01);
-            border-top-color: var(--magenta);
-            border-color: rgba(255,0,170,0.2);
-            box-shadow: var(--glow-m);
-        }
-        .service-card:hover::before { opacity: 1; }
-        .service-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
-        .service-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; color: #ccffee; }
-        .service-desc { color: rgba(180,220,255,0.7); font-size: 0.88rem; line-height: 1.6; }
-        .service-price {
-            margin-top: 14px;
-            display: inline-block;
-            background: rgba(0,245,255,0.1);
-            border: 1px solid rgba(0,245,255,0.25);
-            color: var(--cyan);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
+/* ── SCAN LINE OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
 
-        /* ===== CONTACT FORM ===== */
-        .contact-section {
-            background: var(--card);
-            backdrop-filter: blur(16px);
-            border-radius: 24px;
-            padding: 35px;
-            margin: 35px 0;
-            border: 1px solid rgba(255,0,170,0.2);
-            box-shadow: var(--glow-m);
-        }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-        .form-group { margin-bottom: 18px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            color: rgba(0,245,255,0.8);
-            font-size: 0.88rem;
-            font-weight: 700;
-        }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 13px 18px;
-            background: rgba(0,10,25,0.8);
-            border: 1px solid rgba(0,245,255,0.2);
-            border-radius: 14px;
-            color: white;
-            font-size: 0.95rem;
-            font-family: 'Cairo', sans-serif;
-            transition: 0.25s;
-            outline: none;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 0 3px rgba(0,245,255,0.08);
-        }
-        .form-group textarea { border-radius: 14px; min-height: 110px; resize: vertical; }
-        .form-group select option { background: #0a1420; }
+/* ── NOISE GRAIN ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+  animation: grain 0.5s steps(1) infinite;
+}
+@keyframes grain {
+  0%,100%{transform:translate(0,0)}10%{transform:translate(-2%,-2%)}20%{transform:translate(2%,1%)}30%{transform:translate(-1%,2%)}40%{transform:translate(1%,-1%)}50%{transform:translate(-2%,2%)}60%{transform:translate(2%,-2%)}70%{transform:translate(-1%,1%)}80%{transform:translate(1%,2%)}90%{transform:translate(-2%,-1%)}
+}
 
-        .submit-btn {
-            background: linear-gradient(135deg, var(--magenta), #cc0088);
-            color: white;
-            font-weight: 800;
-            padding: 14px 36px;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
-            transition: 0.3s;
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--glow-m);
-        }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+/* ── LAYOUT ── */
+.wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 16px 100px;
+}
 
-        .messenger-btn {
-            background: linear-gradient(135deg, #0084ff, #0060cc);
-            margin-right: 12px;
-        }
-        .messenger-btn:hover { box-shadow: 0 0 18px rgba(0,132,255,0.4); }
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 30px 20px 24px;
+  margin-bottom: 30px;
+  position: relative;
+}
 
-        .form-result {
-            margin-top: 14px;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-weight: 600;
-            display: none;
-        }
-        .form-result.success { background: rgba(0,255,100,0.1); border: 1px solid rgba(0,255,100,0.3); color: #00ff88; display: block; }
-        .form-result.error { background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.3); color: #ff6666; display: block; }
-        .form-result.loading { background: rgba(0,245,255,0.08); border: 1px solid rgba(0,245,255,0.2); color: var(--cyan); display: block; }
+.header-inner {
+  background: var(--glass);
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 28px 30px 22px;
+  position: relative;
+  overflow: hidden;
+}
 
-        /* ===== CHATBOT ===== */
-        .bot-float {
-            position: fixed;
-            bottom: 28px;
-            left: 28px;
-            z-index: 1000;
-        }
-        .bot-toggle {
-            width: 62px; height: 62px;
-            background: linear-gradient(145deg, #8b0000, #1a0000);
-            border-radius: 50%;
-            border: 2px solid rgba(255,68,68,0.6);
-            box-shadow: 0 0 20px rgba(255,0,0,0.3);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.3s; font-size: 1.7rem;
-        }
-        .bot-toggle:hover { transform: scale(1.08); box-shadow: 0 0 30px rgba(255,0,0,0.5); }
+.header-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c), var(--m), transparent);
+  animation: scanH 3s linear infinite;
+}
+.header-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,255,255,0.08), transparent 70%);
+}
+@keyframes scanH {
+  0%{opacity:1} 50%{opacity:0.3} 100%{opacity:1}
+}
 
-        .bot-window {
-            position: absolute;
-            bottom: 80px;
-            left: 0;
-            width: 360px;
-            height: 480px;
-            background: rgba(8, 2, 2, 0.97);
-            backdrop-filter: blur(20px);
-            border-radius: 22px;
-            border: 1px solid rgba(255,68,68,0.3);
-            box-shadow: 0 0 40px rgba(255,0,0,0.15);
-            display: flex; flex-direction: column;
-            overflow: hidden;
-            transform-origin: bottom left;
-            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .bot-window.hidden { transform: scale(0.8); opacity: 0; pointer-events: none; }
+.logo-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  color: var(--c);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
 
-        .bot-header {
-            background: rgba(30, 5, 5, 0.9);
-            padding: 14px 18px;
-            border-bottom: 1px solid rgba(255,68,68,0.2);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .bot-header-left { display: flex; align-items: center; gap: 10px; }
-        .bot-status { width: 8px; height: 8px; border-radius: 50%; background: #ff4444; box-shadow: 0 0 6px #ff4444; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        .bot-title { color: #ff8888; font-weight: 800; font-size: 0.95rem; }
-        .bot-close { color: rgba(255,100,100,0.6); cursor: pointer; font-size: 1.2rem; transition: 0.2s; background: none; border: none; }
-        .bot-close:hover { color: #ff4444; }
+.logo-main {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, var(--c) 40%, var(--m) 70%, #fff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  position: relative;
+  z-index: 1;
+  animation: glitch 6s infinite;
+}
 
-        .bot-messages {
-            flex: 1; padding: 14px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
-            scrollbar-width: thin; scrollbar-color: rgba(255,68,68,0.3) transparent;
-        }
-        .bot-msg {
-            max-width: 82%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 0.88rem;
-            line-height: 1.5;
-            animation: msgIn 0.2s ease;
-        }
-        @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-        .bot-msg.bot {
-            background: rgba(50,8,8,0.9);
-            border: 1px solid rgba(255,68,68,0.2);
-            color: #ffcccc; align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .bot-msg.user {
-            background: rgba(0,80,120,0.5);
-            border: 1px solid rgba(0,180,255,0.2);
-            color: #cceeff; align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-        .bot-msg a { color: #ff8888; }
+@keyframes glitch {
+  0%,90%,100%{filter:none;transform:none}
+  91%{filter:hue-rotate(90deg);transform:translateX(-2px)}
+  92%{filter:hue-rotate(180deg);transform:translateX(2px)}
+  93%{filter:none;transform:none}
+  96%{filter:hue-rotate(270deg);transform:translateX(-1px)}
+  97%{filter:none;transform:none}
+}
 
-        .bot-input-row {
-            padding: 12px;
-            border-top: 1px solid rgba(255,68,68,0.15);
-            display: flex; gap: 8px;
-        }
-        .bot-input {
-            flex: 1; padding: 10px 14px;
-            background: rgba(20,4,4,0.8);
-            border: 1px solid rgba(255,68,68,0.2);
-            border-radius: 12px; color: white;
-            font-family: 'Cairo', sans-serif; font-size: 0.88rem;
-            outline: none; transition: 0.2s;
-        }
-        .bot-input:focus { border-color: rgba(255,68,68,0.5); }
-        .bot-send {
-            width: 40px; height: 40px;
-            background: rgba(180,0,0,0.6);
-            border: 1px solid rgba(255,68,68,0.3);
-            border-radius: 10px; color: white;
-            cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .bot-send:hover { background: rgba(220,0,0,0.8); }
+.logo-sub {
+  font-size: 0.75rem;
+  color: rgba(170,220,255,0.6);
+  margin-top: 8px;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
+}
 
-        /* ===== FOOTER ===== */
-        .footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: rgba(100,150,200,0.5);
-            font-size: 0.85rem;
-            border-top: 1px solid rgba(0,245,255,0.08);
-            margin-top: 20px;
-        }
+.status-bar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
 
-        /* ===== VISITOR COUNTER ===== */
-        .visitor-bar {
-            text-align: center;
-            padding: 10px;
-            color: rgba(0,245,255,0.4);
-            font-size: 0.82rem;
-            margin-bottom: 30px;
-        }
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: rgba(0,255,255,0.7);
+  font-family: 'Orbitron', monospace;
+}
 
-        @media (max-width: 600px) {
-            .bot-window { width: calc(100vw - 56px); }
-            .header { border-radius: 16px; }
-            .name { font-size: 1.2rem; }
-        }
-    </style>
+.pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--g);
+  box-shadow: 0 0 8px var(--g);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.4;transform:scale(0.7)}
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.social-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--glass2);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.social-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--c), var(--m));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.social-btn:hover::before { opacity: 0.15; }
+.social-btn:hover { border-color: var(--m); color: var(--m); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,255,0.2); }
+.social-btn i { position: relative; z-index: 1; }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--c);
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2), transparent);
+}
+.section-title .icon-box {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: rgba(0,255,255,0.1);
+  border: 1px solid var(--border2);
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--c) 30%, var(--m) 70%, transparent 100%);
+  opacity: 0.5;
+}
+.card:hover {
+  border-color: rgba(0,255,255,0.35);
+  box-shadow: 0 0 40px rgba(0,255,255,0.06), inset 0 0 30px rgba(0,255,255,0.02);
+}
+
+/* ── INPUT ── */
+.neo-input {
+  background: rgba(0,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #e0f4ff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+}
+.neo-input:focus {
+  border-color: var(--c);
+  box-shadow: 0 0 0 3px rgba(0,255,255,0.08), inset 0 0 10px rgba(0,255,255,0.03);
+}
+.neo-input::placeholder { color: rgba(150,200,255,0.35); }
+
+/* ── BUTTON ── */
+.neo-btn {
+  background: linear-gradient(135deg, rgba(0,255,255,0.15), rgba(0,100,255,0.15));
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 11px 22px;
+  color: var(--c);
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+.neo-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--c), var(--m));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.neo-btn:hover::before { opacity: 0.12; }
+.neo-btn:hover { border-color: var(--c); box-shadow: 0 0 20px rgba(0,255,255,0.2); transform: translateY(-1px); }
+.neo-btn:active { transform: translateY(0); }
+.neo-btn span { position: relative; z-index: 1; }
+.neo-btn.m { border-color: rgba(255,0,255,0.4); color: var(--m); }
+.neo-btn.m:hover { border-color: var(--m); box-shadow: 0 0 20px rgba(255,0,255,0.2); }
+
+/* ── IP TRACKER ── */
+.ip-row { display: flex; gap: 10px; }
+.ip-row .neo-input { flex: 1; }
+
+.result-panel {
+  margin-top: 18px;
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+.result-panel.show { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.info-tile {
+  background: rgba(0,255,255,0.04);
+  border: 1px solid rgba(0,255,255,0.12);
+  border-radius: 14px;
+  padding: 12px 14px;
+  transition: all 0.3s;
+}
+.info-tile:hover { border-color: var(--border2); background: rgba(0,255,255,0.07); }
+.info-tile .lbl {
+  font-size: 0.6rem;
+  color: rgba(0,255,255,0.5);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-family: 'Orbitron', monospace;
+  margin-bottom: 5px;
+}
+.info-tile .val {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e0f4ff;
+}
+
+.map-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,0,0,0.3);
+  height: 260px;
+  box-shadow: 0 0 30px rgba(255,0,0,0.08), inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.warning-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,80,80,0.08);
+  border: 1px solid rgba(255,80,80,0.2);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.65rem;
+  color: rgba(255,130,130,0.8);
+  margin-top: 12px;
+}
+
+/* ── TRANSLATOR ── */
+.translate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media(max-width:600px){ .translate-grid{grid-template-columns:1fr} }
+
+.translate-pane {
+  background: rgba(0,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+}
+.translate-pane label {
+  font-size: 0.65rem;
+  color: rgba(0,255,255,0.5);
+  letter-spacing: 2px;
+  font-family: 'Orbitron', monospace;
+  display: block;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+.translate-pane textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #d0e8ff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.9rem;
+  resize: none;
+  min-height: 90px;
+}
+.translate-pane textarea::placeholder { color: rgba(150,200,255,0.25); }
+
+.translate-result-pane {
+  background: rgba(0,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  min-height: 120px;
+  font-size: 0.9rem;
+  color: rgba(200,240,255,0.8);
+  line-height: 1.7;
+}
+.translate-result-pane .placeholder { color: rgba(150,200,255,0.25); font-style: italic; }
+
+.translate-actions { display: flex; gap: 10px; justify-content: center; margin: 14px 0; flex-wrap: wrap; }
+
+/* ── AI FLOATING BUTTON ── */
+.ai-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #2a0050, #0a001a);
+  border: 2px solid var(--m);
+  box-shadow: 0 0 25px rgba(255,0,255,0.4), 0 0 60px rgba(255,0,255,0.1);
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: var(--m);
+  transition: all 0.3s;
+  animation: fabPulse 3s ease-in-out infinite;
+}
+@keyframes fabPulse {
+  0%,100%{box-shadow:0 0 25px rgba(255,0,255,0.4),0 0 60px rgba(255,0,255,0.1)}
+  50%{box-shadow:0 0 35px rgba(255,0,255,0.6),0 0 80px rgba(255,0,255,0.2)}
+}
+.ai-fab:hover { transform: scale(1.1) rotate(10deg); border-color: var(--c); color: var(--c); }
+.ai-fab .notif {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 12px; height: 12px;
+  background: var(--g);
+  border-radius: 50%;
+  border: 2px solid var(--dark);
+  box-shadow: 0 0 8px var(--g);
+}
+
+/* ── AI WINDOW ── */
+.ai-win {
+  position: fixed;
+  bottom: 100px;
+  left: 24px;
+  width: 360px;
+  height: 500px;
+  background: rgba(6,10,24,0.97);
+  backdrop-filter: blur(30px);
+  border-radius: 22px;
+  border: 1px solid rgba(255,0,255,0.3);
+  z-index: 9998;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(255,0,255,0.15), 0 30px 60px rgba(0,0,0,0.6);
+  animation: winIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes winIn {
+  from{opacity:0;transform:translateY(20px) scale(0.95)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.ai-win-header {
+  background: linear-gradient(135deg, rgba(40,0,70,0.9), rgba(0,10,40,0.9));
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,0,255,0.2);
+  cursor: move;
+  user-select: none;
+  flex-shrink: 0;
+}
+.ai-win-header::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--m), var(--c), transparent);
+}
+
+.ai-win-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  color: var(--m);
+  letter-spacing: 2px;
+}
+.ai-win-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--g); box-shadow: 0 0 8px var(--g); animation: pulse 2s infinite; }
+
+.ai-win-close {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: rgba(255,0,255,0.1);
+  border: 1px solid rgba(255,0,255,0.2);
+  color: rgba(255,0,255,0.7);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.ai-win-close:hover { background: rgba(255,0,255,0.2); color: var(--m); }
+
+.ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ai-messages::-webkit-scrollbar { width: 3px; }
+.ai-messages::-webkit-scrollbar-thumb { background: rgba(255,0,255,0.3); }
+
+.msg-ai, .msg-user {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  animation: fadeIn 0.25s ease;
+}
+.msg-ai {
+  background: rgba(0,255,255,0.06);
+  border: 1px solid rgba(0,255,255,0.12);
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  color: #c8e8ff;
+}
+.msg-user {
+  background: rgba(255,0,255,0.08);
+  border: 1px solid rgba(255,0,255,0.15);
+  border-bottom-right-radius: 4px;
+  align-self: flex-end;
+  text-align: right;
+  color: #f0d0ff;
+}
+
+.typing-ind {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+  background: rgba(0,255,255,0.04);
+  border: 1px solid rgba(0,255,255,0.08);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  align-self: flex-start;
+  width: fit-content;
+}
+.typing-ind span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--c); opacity: 0.6;
+  animation: bounce 1.2s infinite;
+}
+.typing-ind span:nth-child(2){animation-delay:.2s}
+.typing-ind span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+.ai-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid rgba(255,0,255,0.15);
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.3);
+}
+.ai-input-row input {
+  flex: 1;
+  background: rgba(255,0,255,0.05);
+  border: 1px solid rgba(255,0,255,0.2);
+  border-radius: 10px;
+  padding: 9px 13px;
+  color: #e8d0ff;
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ai-input-row input:focus { border-color: var(--m); }
+.ai-input-row input::placeholder { color: rgba(200,150,255,0.3); }
+
+.send-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(100,0,255,0.2));
+  border: 1px solid rgba(255,0,255,0.3);
+  color: var(--m);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.send-btn:hover { background: rgba(255,0,255,0.25); box-shadow: 0 0 15px rgba(255,0,255,0.2); }
+
+/* ── MODEL SELECTOR ── */
+.model-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255,0,255,0.04);
+  border-bottom: 1px solid rgba(255,0,255,0.1);
+  flex-shrink: 0;
+}
+.model-row label { font-size: 0.65rem; color: rgba(200,150,255,0.5); font-family: 'Orbitron', monospace; white-space: nowrap; }
+.model-row select {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(200,150,255,0.8);
+  font-family: 'Cairo', sans-serif;
+  font-size: 0.78rem;
+  outline: none;
+  cursor: pointer;
+}
+.model-row select option { background: #0a0a1a; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.65rem;
+  color: rgba(100,160,180,0.4);
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 2px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px){
+  .ai-win { width: calc(100vw - 20px); left: 10px; }
+  .ip-row { flex-direction: column; }
+}
+</style>
 </head>
 <body>
-<div class="bg-grid"></div>
-<div class="bg-orb orb1"></div>
-<div class="bg-orb orb2"></div>
 
-<div class="container">
-    <!-- HEADER -->
-    <div class="header">
-        <div class="profile">
-            <div class="avatar">
-                <div class="avatar-inner">🛡️</div>
-            </div>
-            <div>
-                <div class="name" id="headerName">RABI3 PROF</div>
-                <div class="tagline" id="headerTagline">خبير الأمن السيبراني</div>
-            </div>
-        </div>
-        <div class="header-right">
-            <div class="social-icons">
-                <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
-                <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" title="Telegram"><i class="fab fa-telegram"></i></a>
-            </div>
-            <button class="lang-switch" onclick="toggleLang()" id="langBtn">EN</button>
-        </div>
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo-tag">// SYSTEM ONLINE v3.0</div>
+      <div class="logo-main">RABI3 AI PRO</div>
+      <div class="logo-sub">الذكاء الخارق · تتبع · ترجمة · محادثة</div>
+      <div class="status-bar">
+        <div class="status-item"><span class="pulse-dot"></span> ONLINE</div>
+        <div class="status-item"><span class="pulse-dot" style="background:var(--c);box-shadow:0 0 8px var(--c)"></span> AI READY</div>
+        <div class="status-item"><span class="pulse-dot" style="background:var(--m);box-shadow:0 0 8px var(--m)"></span> SECURE</div>
+      </div>
+      <div class="socials">
+        <a href="https://www.facebook.com/HACR97" target="_blank" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/real_rabi31" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>
+        <a href="https://t.me/rabi3_prof12" target="_blank" class="social-btn"><i class="fab fa-telegram-plane"></i></a>
+      </div>
     </div>
+  </div>
 
-    <div class="visitor-bar" id="visitorBar">👥 زوار اليوم: 1</div>
-
-    <!-- SERVICES -->
-    <div class="section-title" id="servicesTitle">⚡ الخدمات</div>
-    <div class="services-grid" id="servicesGrid">
-        <div class="service-card" data-service="hack" onclick="openBotWithService('hack')">
-            <span class="service-icon">🔥</span>
-            <div class="service-title" data-ar="اختبار الاختراق الأخلاقي" data-en="Ethical Penetration Testing">اختبار الاختراق الأخلاقي</div>
-            <div class="service-desc" data-ar="فحص شامل لثغرات الأنظمة والشبكات بأساليب احترافية" data-en="Comprehensive vulnerability assessment for systems and networks">فحص شامل لثغرات الأنظمة والشبكات بأساليب احترافية</div>
-            <span class="service-price">$50</span>
-        </div>
-        <div class="service-card" data-service="protect" onclick="openBotWithService('protect')">
-            <span class="service-icon">🛡️</span>
-            <div class="service-title" data-ar="حماية الحسابات" data-en="Account Protection">حماية الحسابات</div>
-            <div class="service-desc" data-ar="تأمين حساباتك الرقمية ضد الاختراق والتصيد الاحتيالي" data-en="Secure your digital accounts against hacking and phishing">تأمين حساباتك الرقمية ضد الاختراق والتصيد الاحتيالي</div>
-            <span class="service-price">$30</span>
-        </div>
-        <div class="service-card" data-service="consult" onclick="openBotWithService('consult')">
-            <span class="service-icon">🎯</span>
-            <div class="service-title" data-ar="استشارات الأمن السيبراني" data-en="Cybersecurity Consulting">استشارات الأمن السيبراني</div>
-            <div class="service-desc" data-ar="تقييم المخاطر وتقديم خطة أمنية متكاملة لمشروعك" data-en="Risk assessment and integrated security plan for your project">تقييم المخاطر وتقديم خطة أمنية متكاملة لمشروعك</div>
-            <span class="service-price">$40/hr</span>
-        </div>
-        <div class="service-card" data-service="training" onclick="openBotWithService('training')">
-            <span class="service-icon">📚</span>
-            <div class="service-title" data-ar="التدريب والتوعية" data-en="Training & Awareness">التدريب والتوعية</div>
-            <div class="service-desc" data-ar="دورات تدريبية في الأمن السيبراني للأفراد والشركات" data-en="Cybersecurity training courses for individuals and companies">دورات تدريبية في الأمن السيبراني للأفراد والشركات</div>
-            <span class="service-price">$25/hr</span>
-        </div>
-        <div class="service-card" data-service="report" onclick="openBotWithService('report')">
-            <span class="service-icon">📋</span>
-            <div class="service-title" data-ar="تقارير الثغرات" data-en="Vulnerability Reports">تقارير الثغرات</div>
-            <div class="service-desc" data-ar="تقارير تفصيلية احترافية لثغرات الأنظمة مع توصيات الحل" data-en="Detailed professional vulnerability reports with remediation">تقارير تفصيلية احترافية لثغرات الأنظمة مع توصيات الحل</div>
-            <span class="service-price">$60</span>
-        </div>
-        <div class="service-card" data-service="web" onclick="openBotWithService('web')">
-            <span class="service-icon">🌐</span>
-            <div class="service-title" data-ar="فحص أمان المواقع" data-en="Web Security Audit">فحص أمان المواقع</div>
-            <div class="service-desc" data-ar="فحص شامل لأمان موقعك من OWASP Top 10 والثغرات الشائعة" data-en="Full audit against OWASP Top 10 and common web vulnerabilities">فحص شامل لأمان موقعك من OWASP Top 10 والثغرات الشائعة</div>
-            <span class="service-price">$70</span>
-        </div>
+  <!-- IP TRACKER -->
+  <div class="card">
+    <div class="section-title">
+      <div class="icon-box">📡</div>
+      IP TRACKER
     </div>
-
-    <!-- CONTACT FORM -->
-    <div class="section-title" id="contactTitle">✉️ تواصل معنا</div>
-    <div class="contact-section">
-        <div id="formAr">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>الاسم الكامل</label>
-                    <input type="text" id="arName" placeholder="أدخل اسمك" autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label>رقم التواصل (اختياري)</label>
-                    <input type="text" id="arPhone" placeholder="واتساب / تليجرام">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>نوع الخدمة المطلوبة</label>
-                <select id="arService">
-                    <option value="">-- اختر الخدمة --</option>
-                    <option value="اختبار اختراق أخلاقي">اختبار اختراق أخلاقي</option>
-                    <option value="حماية حسابات">حماية حسابات</option>
-                    <option value="استشارات أمنية">استشارات أمنية</option>
-                    <option value="تدريب">تدريب</option>
-                    <option value="تقرير ثغرات">تقرير ثغرات</option>
-                    <option value="فحص موقع">فحص موقع</option>
-                    <option value="أخرى">أخرى</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>رسالتك</label>
-                <textarea id="arMsg" placeholder="اشرح طلبك بالتفصيل..."></textarea>
-            </div>
-            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                <button class="submit-btn messenger-btn" onclick="openMessenger()">
-                    <i class="fab fa-facebook-messenger"></i> ماسنجر
-                </button>
-                <button class="submit-btn" id="arSubmitBtn" onclick="submitForm('ar')">
-                    <i class="fab fa-telegram"></i> إرسال عبر تليجرام
-                </button>
-            </div>
-            <div class="form-result" id="arResult"></div>
-        </div>
-
-        <div id="formEn" style="display:none;">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="enName" placeholder="Enter your name" autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label>Contact (optional)</label>
-                    <input type="text" id="enPhone" placeholder="WhatsApp / Telegram">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Service Required</label>
-                <select id="enService">
-                    <option value="">-- Choose service --</option>
-                    <option value="Ethical Pentesting">Ethical Pentesting</option>
-                    <option value="Account Protection">Account Protection</option>
-                    <option value="Security Consulting">Security Consulting</option>
-                    <option value="Training">Training</option>
-                    <option value="Vulnerability Report">Vulnerability Report</option>
-                    <option value="Web Audit">Web Audit</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Your Message</label>
-                <textarea id="enMsg" placeholder="Describe your request in detail..."></textarea>
-            </div>
-            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                <button class="submit-btn messenger-btn" onclick="openMessenger()">
-                    <i class="fab fa-facebook-messenger"></i> Messenger
-                </button>
-                <button class="submit-btn" id="enSubmitBtn" onclick="submitForm('en')">
-                    <i class="fab fa-telegram"></i> Send via Telegram
-                </button>
-            </div>
-            <div class="form-result" id="enResult"></div>
-        </div>
+    <div class="ip-row">
+      <input class="neo-input" type="text" id="targetIp" placeholder="أدخل عنوان IP (مثال: 8.8.8.8)" value="8.8.8.8" dir="ltr"/>
+      <button class="neo-btn" id="scanBtn"><span>🔍 تتبع</span></button>
     </div>
-
-    <div class="footer">
-        <p>© 2025 RABI3 PROF | Cyber Security Services</p>
-        <p style="margin-top:6px; font-size:0.78rem;">جميع الخدمات تُقدم وفق الأطر القانونية والأخلاقية المعتمدة</p>
+    <div id="ipResult" class="result-panel">
+      <div id="ipInfoGrid" class="info-grid"></div>
+      <div id="mapContainer" class="map-wrap"></div>
     </div>
+    <div class="warning-tag">⚠️ للأغراض التعليمية فقط</div>
+  </div>
+
+  <!-- TRANSLATOR -->
+  <div class="card">
+    <div class="section-title">
+      <div class="icon-box">🌐</div>
+      TRANSLATOR
+    </div>
+    <div class="translate-grid">
+      <div class="translate-pane">
+        <label>INPUT TEXT</label>
+        <textarea id="sourceText" placeholder="اكتب النص هنا للترجمة..."></textarea>
+      </div>
+      <div class="translate-result-pane" id="translateResult">
+        <span class="placeholder">ستظهر الترجمة هنا...</span>
+      </div>
+    </div>
+    <div class="translate-actions">
+      <button class="neo-btn" id="toArabicBtn"><span>🇸🇦 ترجمة للعربية</span></button>
+      <button class="neo-btn m" id="toEnglishBtn"><span>🇬🇧 Translate to English</span></button>
+    </div>
+  </div>
+
+  <footer>© RABI3 PROF12 · POWERED BY AI · ALL SYSTEMS NOMINAL</footer>
 </div>
 
-<!-- CHATBOT -->
-<div class="bot-float">
-    <div class="bot-window hidden" id="botWindow">
-        <div class="bot-header">
-            <div class="bot-header-left">
-                <div class="bot-status"></div>
-                <span class="bot-title">🔥 RABI3 Assistant</span>
-            </div>
-            <button class="bot-close" onclick="toggleBot()">✕</button>
-        </div>
-        <div class="bot-messages" id="botMessages"></div>
-        <div class="bot-input-row">
-            <input class="bot-input" id="botInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendBot()">
-            <button class="bot-send" onclick="sendBot()"><i class="fas fa-paper-plane"></i></button>
-        </div>
+<!-- AI FAB -->
+<button class="ai-fab" id="aiBtn">
+  <i class="fas fa-brain"></i>
+  <div class="notif"></div>
+</button>
+
+<!-- AI WINDOW -->
+<div class="ai-win" id="aiWindow">
+  <div class="ai-win-header" id="aiDragHandle">
+    <div class="ai-win-title">
+      <div class="dot"></div>
+      RABI3 AI
     </div>
-    <button class="bot-toggle" onclick="toggleBot()" title="Chat">💀</button>
+    <button class="ai-win-close" id="closeAi">✕</button>
+  </div>
+  <div class="model-row">
+    <label>MODEL:</label>
+    <select id="modelSelect">
+      <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
+      <option value="meta-llama/llama-3.1-8b-instruct:free">LLaMA 3.1 8B (Free)</option>
+      <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
+      <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (Free)</option>
+    </select>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="msg-ai">🤖 مرحباً! أنا RABI3 AI — اسألني أي شيء وسأجيبك فوراً.</div>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا..."/>
+    <button class="send-btn" id="sendAi"><i class="fas fa-paper-plane"></i></button>
+  </div>
 </div>
 
 <script>
-    // ===== CONFIG (ضع توكن تليجرام هنا) =====
-    const TG_TOKEN = "YOUR_BOT_TOKEN_HERE";
-    const TG_CHAT_ID = "YOUR_CHAT_ID_HERE";
+// ── ANIMATED BACKGROUND ──
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
 
-    // ===== LANGUAGE =====
-    let lang = 'ar';
-    function toggleLang() {
-        lang = lang === 'ar' ? 'en' : 'ar';
-        document.getElementById('langBtn').textContent = lang === 'ar' ? 'EN' : 'AR';
-        document.documentElement.lang = lang;
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-        document.getElementById('formAr').style.display = lang === 'ar' ? 'block' : 'none';
-        document.getElementById('formEn').style.display = lang === 'en' ? 'block' : 'none';
-        document.getElementById('headerTagline').textContent = lang === 'ar' ? 'خبير الأمن السيبراني' : 'Cybersecurity Expert';
-        document.getElementById('servicesTitle').textContent = lang === 'ar' ? '⚡ الخدمات' : '⚡ Services';
-        document.getElementById('contactTitle').textContent = lang === 'ar' ? '✉️ تواصل معنا' : '✉️ Contact Us';
-        document.querySelectorAll('[data-ar]').forEach(el => {
-            el.textContent = lang === 'ar' ? el.dataset.ar : el.dataset.en;
-        });
-        updateVisitorCounter();
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.r = Math.random() * 1.5 + 0.3;
+    this.a = Math.random();
+    this.c = Math.random() > 0.5 ? '0,255,255' : '255,0,255';
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.c},${this.a * 0.6})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+function drawConnections() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,255,255,${(1 - dist/100) * 0.08})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
     }
+  }
+}
 
-    // ===== CONTACT FORM =====
-    async function submitForm(formLang) {
-        const isAr = formLang === 'ar';
-        const name = document.getElementById(isAr ? 'arName' : 'enName').value.trim();
-        const phone = document.getElementById(isAr ? 'arPhone' : 'enPhone').value.trim();
-        const service = document.getElementById(isAr ? 'arService' : 'enService').value;
-        const msg = document.getElementById(isAr ? 'arMsg' : 'enMsg').value.trim();
-        const resultEl = document.getElementById(isAr ? 'arResult' : 'enResult');
-        const btnEl = document.getElementById(isAr ? 'arSubmitBtn' : 'enSubmitBtn');
+function animate() {
+  ctx.clearRect(0, 0, W, H);
+  // Grid
+  ctx.strokeStyle = 'rgba(0,255,255,0.03)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  particles.forEach(p => { p.update(); p.draw(); });
+  drawConnections();
+  requestAnimationFrame(animate);
+}
+animate();
 
-        if (!name || !msg) {
-            resultEl.className = 'form-result error';
-            resultEl.textContent = isAr ? '⚠️ يرجى تعبئة الاسم والرسالة على الأقل.' : '⚠️ Please fill in name and message.';
-            return;
-        }
+// ── IP TRACKER ──
+let map = null;
 
-        btnEl.disabled = true;
-        resultEl.className = 'form-result loading';
-        resultEl.textContent = isAr ? '⏳ جاري الإرسال...' : '⏳ Sending...';
+async function fetchIP(ip) {
+  const res = await fetch(`https://ip-api.com/json/${ip}?fields=66846719`);
+  const data = await res.json();
+  if (data.status === 'fail') throw new Error('IP غير صالح');
+  return data;
+}
 
-        const text = `📨 رسالة جديدة من الموقع\n` +
-            `👤 الاسم: ${name}\n` +
-            `📞 التواصل: ${phone || 'لم يُذكر'}\n` +
-            `🛠️ الخدمة: ${service || 'لم تُحدد'}\n` +
-            `💬 الرسالة: ${msg}\n` +
-            `🕒 ${new Date().toLocaleString('ar')}`;
+function showMap(lat, lon, city) {
+  const c = document.getElementById('mapContainer');
+  if (map) { map.remove(); map = null; }
+  c.innerHTML = '';
+  map = L.map(c).setView([lat, lon], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '© OSM' }).addTo(map);
+  L.circle([lat, lon], { color: '#ff0000', fillColor: '#ff0000', fillOpacity: 0.12, radius: 1200 }).addTo(map);
+  L.marker([lat, lon]).addTo(map).bindPopup(`<b style="color:red">${city}</b>`).openPopup();
+}
 
-        if (TG_TOKEN === "YOUR_BOT_TOKEN_HERE") {
-            // وضع تجريبي - اطبع في الكونسول
-            console.log('Form Data:', { name, phone, service, msg });
-            setTimeout(() => {
-                resultEl.className = 'form-result success';
-                resultEl.textContent = isAr ? '✅ تم الإرسال بنجاح! سنتواصل معك قريباً.' : '✅ Sent successfully! We will contact you soon.';
-                btnEl.disabled = false;
-            }, 800);
-            return;
-        }
+function displayIP(data) {
+  const grid = document.getElementById('ipInfoGrid');
+  grid.innerHTML = '';
+  const fields = [
+    { lbl: '🌐 IP ADDRESS', val: data.query },
+    { lbl: '🌍 COUNTRY', val: data.country },
+    { lbl: '🏙️ CITY', val: data.city },
+    { lbl: '📍 COORDINATES', val: `${data.lat?.toFixed(4)}, ${data.lon?.toFixed(4)}` },
+    { lbl: '📡 ISP', val: data.isp || 'Unknown' },
+    { lbl: '🕐 TIMEZONE', val: data.timezone || 'Unknown' },
+  ];
+  fields.forEach(f => {
+    const d = document.createElement('div');
+    d.className = 'info-tile';
+    d.innerHTML = `<div class="lbl">${f.lbl}</div><div class="val">${f.val}</div>`;
+    grid.appendChild(d);
+  });
+  document.getElementById('ipResult').classList.add('show');
+  showMap(data.lat, data.lon, data.city);
+}
 
-        try {
-            const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TG_CHAT_ID, text })
-            });
-            if (res.ok) {
-                resultEl.className = 'form-result success';
-                resultEl.textContent = isAr ? '✅ تم الإرسال! سنتواصل معك قريباً.' : '✅ Sent! We will contact you soon.';
-                document.getElementById(isAr ? 'arName' : 'enName').value = '';
-                document.getElementById(isAr ? 'arMsg' : 'enMsg').value = '';
-            } else {
-                throw new Error('Failed');
-            }
-        } catch(e) {
-            resultEl.className = 'form-result error';
-            resultEl.textContent = isAr ? '❌ فشل الإرسال. حاول مرة أخرى.' : '❌ Send failed. Please try again.';
-        }
-        btnEl.disabled = false;
-    }
+document.getElementById('scanBtn').onclick = async () => {
+  const ip = document.getElementById('targetIp').value.trim();
+  if (!ip) return;
+  const btn = document.getElementById('scanBtn');
+  btn.innerHTML = '<span>⏳ جاري...</span>';
+  btn.disabled = true;
+  try { const data = await fetchIP(ip); displayIP(data); }
+  catch(e) { alert(e.message); }
+  finally { btn.innerHTML = '<span>🔍 تتبع</span>'; btn.disabled = false; }
+};
 
-    function openMessenger() {
-        window.open('https://m.me/HACR97', '_blank');
-    }
+// ── TRANSLATOR ──
+async function translate(text, pair) {
+  const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${pair}`);
+  const data = await res.json();
+  return data.responseData?.translatedText || '—';
+}
 
-    // ===== CHATBOT =====
-    const botWindow = document.getElementById('botWindow');
-    const botMessages = document.getElementById('botMessages');
-    let botOpened = false;
+document.getElementById('toArabicBtn').onclick = async () => {
+  const txt = document.getElementById('sourceText').value.trim();
+  const div = document.getElementById('translateResult');
+  if (!txt) return;
+  div.innerHTML = '<span class="placeholder">⏳ جاري الترجمة...</span>';
+  const r = await translate(txt, 'en|ar');
+  div.innerHTML = `🇸🇦 ${r}`;
+};
+document.getElementById('toEnglishBtn').onclick = async () => {
+  const txt = document.getElementById('sourceText').value.trim();
+  const div = document.getElementById('translateResult');
+  if (!txt) return;
+  div.innerHTML = '<span class="placeholder">⏳ Translating...</span>';
+  const r = await translate(txt, 'ar|en');
+  div.innerHTML = `🇬🇧 ${r}`;
+};
 
-    function toggleBot() {
-        botWindow.classList.toggle('hidden');
-        if (!botOpened) {
-            botOpened = true;
-            addBotMsg('مرحباً! 👋 أنا مساعد RABI3. كيف يمكنني مساعدتك اليوم؟\n\nاكتب: خدمات، أسعار، تواصل', false);
-        }
-    }
+// ── AI CHAT ──
+const aiBtn = document.getElementById('aiBtn');
+const aiWin = document.getElementById('aiWindow');
+const closeAi = document.getElementById('closeAi');
+const aiMessages = document.getElementById('aiMessages');
+const aiInput = document.getElementById('aiInput');
+const sendAi = document.getElementById('sendAi');
 
-    function openBotWithService(type) {
-        botWindow.classList.remove('hidden');
-        botOpened = true;
-        const replies = {
-            hack: '🔥 اختبار الاختراق الأخلاقي — $50\nيشمل: فحص الشبكة، الثغرات، تقرير مفصل.\n\n<a href="https://m.me/HACR97" target="_blank" style="color:#ff8888;">📩 تواصل عبر ماسنجر</a>',
-            protect: '🛡️ حماية الحسابات — $30\nتأمين كامل لحساباتك + توصيات.\n\n<a href="https://m.me/HACR97" target="_blank" style="color:#ff8888;">📩 تواصل عبر ماسنجر</a>',
-            consult: '🎯 استشارات الأمن — $40/ساعة\nتقييم شامل + خطة أمنية.\n\n<a href="https://m.me/HACR97" target="_blank" style="color:#ff8888;">📩 تواصل عبر ماسنجر</a>',
-            training: '📚 التدريب — $25/ساعة\nدورات أمن سيبراني للمبتدئين والمحترفين.\n\n<a href="https://m.me/HACR97" target="_blank" style="color:#ff8888;">📩 تواصل عبر ماسنجر</a>',
-            report: '📋 تقارير الثغرات — $60\nتقرير احترافي مفصل مع خطوات الإصلاح.\n\n<a href="https://m.me/HACR97" target="_blank" style="color:#ff8888;">📩 تواصل عبر ماسنجر</a>',
-            web: '🌐 فحص أمان المواقع — $70\nفحص OWASP Top 10 + تقرير كامل.\n\n<a href="https://m.me/HACR97" target="_blank" style="color:#ff8888;">📩 تواصل عبر ماسنجر</a>',
-        };
-        addBotMsg(replies[type] || 'للمزيد من المعلومات تواصل معنا!', false);
-    }
+let isWaiting = false;
+let isDragging = false, dX = 0, dY = 0;
 
-    function addBotMsg(text, isUser) {
-        const div = document.createElement('div');
-        div.className = `bot-msg ${isUser ? 'user' : 'bot'}`;
-        div.innerHTML = text.replace(/\n/g, '<br>');
-        botMessages.appendChild(div);
-        botMessages.scrollTop = botMessages.scrollHeight;
-    }
+const dragHandle = document.getElementById('aiDragHandle');
+dragHandle.addEventListener('mousedown', e => {
+  isDragging = true;
+  dX = e.clientX - aiWin.getBoundingClientRect().left;
+  dY = e.clientY - aiWin.getBoundingClientRect().top;
+});
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  let left = e.clientX - dX;
+  let top = e.clientY - dY;
+  left = Math.min(Math.max(0, left), window.innerWidth - aiWin.offsetWidth);
+  top = Math.min(Math.max(0, top), window.innerHeight - aiWin.offsetHeight);
+  aiWin.style.left = left + 'px'; aiWin.style.right = 'auto';
+  aiWin.style.top = top + 'px'; aiWin.style.bottom = 'auto';
+});
+document.addEventListener('mouseup', () => isDragging = false);
 
-    function sendBot() {
-        const input = document.getElementById('botInput');
-        const text = input.value.trim();
-        if (!text) return;
-        addBotMsg(text, true);
-        input.value = '';
-        setTimeout(() => addBotMsg(getBotReply(text), false), 300);
-    }
+aiBtn.onclick = () => { aiWin.style.display = 'flex'; };
+closeAi.onclick = () => { aiWin.style.display = 'none'; };
 
-    function getBotReply(msg) {
-        const m = msg.toLowerCase();
-        if (m.includes('خدم') || m.includes('service')) return '⚡ خدماتنا:\n• اختبار اختراق أخلاقي — $50\n• حماية حسابات — $30\n• استشارات أمنية — $40/ساعة\n• تدريب — $25/ساعة\n• تقارير ثغرات — $60\n• فحص مواقع — $70';
-        if (m.includes('سعر') || m.includes('price') || m.includes('كم')) return '💰 الأسعار تبدأ من $25. اضغط على أي خدمة لتفاصيل أكثر، أو تواصل معنا مباشرة.';
-        if (m.includes('تواصل') || m.includes('contact') || m.includes('واتس') || m.includes('تليجرام')) return '📞 تواصل معنا:\n• ماسنجر: m.me/HACR97\n• أو استخدم نموذج التواصل في الأسفل';
-        if (m.includes('من انت') || m.includes('who are you')) return '🛡️ أنا RABI3، خبير أمن سيبراني متخصص في اختبار الاختراق الأخلاقي وحماية الأنظمة.';
-        if (m.includes('مرحب') || m.includes('hello') || m.includes('hi')) return '👋 أهلاً وسهلاً! كيف يمكنني مساعدتك؟ اكتب "خدمات" لعرض ما نقدمه.';
-        return ['🔥 يمكنني مساعدتك في أي شيء يتعلق بالأمن السيبراني.', '⚡ اكتب "خدمات" لرؤية قائمة خدماتنا الكاملة.', '🛡️ هل تحتاج استشارة أمنية؟ نحن هنا!'][Math.floor(Math.random()*3)];
-    }
+function addMsg(text, isUser) {
+  const d = document.createElement('div');
+  d.className = isUser ? 'msg-user' : 'msg-ai';
+  d.textContent = (isUser ? '👤 ' : '🤖 ') + text;
+  aiMessages.appendChild(d);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
 
-    // ===== VISITOR COUNTER (محلي فقط) =====
-    function updateVisitorCounter() {
-        const today = new Date().toLocaleDateString();
-        let data = JSON.parse(localStorage.getItem('vc') || '{"d":"","c":0}');
-        if (data.d !== today) data = { d: today, c: 0 };
-        data.c++;
-        localStorage.setItem('vc', JSON.stringify(data));
-        document.getElementById('visitorBar').textContent =
-            lang === 'ar' ? `👥 زوار اليوم: ${data.c}` : `👥 Visitors today: ${data.c}`;
-    }
-    updateVisitorCounter();
+function showTyping() {
+  const d = document.createElement('div');
+  d.className = 'typing-ind'; d.id = 'typingInd';
+  d.innerHTML = '<span></span><span></span><span></span>';
+  aiMessages.appendChild(d);
+  aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+function hideTyping() { document.getElementById('typingInd')?.remove(); }
+
+async function callAI(msg) {
+  try {
+    const model = document.getElementById('modelSelect').value;
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: 'user', content: msg }],
+      })
+    });
+    const data = await res.json();
+    if (data.error) return '❌ ' + data.error;
+    return data.choices[0].message.content;
+  } catch(e) { return '❌ خطأ في الاتصال'; }
+}
+
+async function sendMsg() {
+  const msg = aiInput.value.trim();
+  if (!msg || isWaiting) return;
+  addMsg(msg, true);
+  aiInput.value = '';
+  isWaiting = true;
+  showTyping();
+  const reply = await callAI(msg);
+  hideTyping();
+  addMsg(reply, false);
+  isWaiting = false;
+}
+
+sendAi.onclick = sendMsg;
+aiInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMsg(); });
+
+console.log('%c⚡ RABI3 AI PRO — ONLINE', 'color:#0ff;font-family:monospace;font-size:14px;font-weight:bold');
 </script>
 </body>
 </html>
